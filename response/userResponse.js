@@ -9,6 +9,7 @@ module.exports = class {
     this.workingArea = instance.workingArea ? instance.workingArea : ''
     this.phoneNumber = instance.phoneNumber ? instance.phoneNumber : ''
     this.status = instance.status ? instance.status : '' 
-    this.token = instance.token ? instance.token : '' 
+    this.token = instance.token ? instance.token : ''
+    this.panNumber = instance.panNumber ? instance.panNumber : ''
   }
 }

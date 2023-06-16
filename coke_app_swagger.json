@@ -8,6 +8,9 @@
   "servers": [
     {
       "url": "http://localhost:5000"
+    },
+    {
+      "url":"https://coke-app-xi.vercel.app/"
     }
   ],
   "security": [
@@ -102,13 +105,27 @@
         }
       }
     },
-    "/api/v1/superadmin/alluserlistforsuperadmin": {
+    "/api/v1/superadmin/alluserlistforsuperadmin/{perPage}/{limit}": {
       "get": {
         "tags": [
           "Supper Admin"
         ],
         "description": "Get All user list",
         "summary": "Get All user list",
+        "parameters": [
+          {
+            "name": "perPage",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
         "responses": {
           "200": {
             "description": "csv list response ",
@@ -366,6 +383,64 @@
                     "data": {
                       "type": "string",
                       "description": "image file path"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/superadmin/allDatafromMaster/{perPage}/{limit}": {
+      "get": {
+        "tags": [
+          "Supper Admin"
+        ],
+        "description": "Get All user list",
+        "summary": "Get All user list",
+        "parameters": [
+          {
+            "name": "perPage",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "csv list response ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "description": "1 for success 0 for failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "message to be displayed in alert"
+                    },
+                    "data": {
+                      "type": "object"
                     }
                   }
                 }

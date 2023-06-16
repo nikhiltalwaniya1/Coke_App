@@ -1,5 +1,5 @@
 const templateId = {
-  WELCOME_AND_PASSWORD:"d-de2903461f084176bae70fde49676a67"
+  WELCOME_AND_PASSWORD:"d-f6158e5e4bf241c2ba066711d59430f9"
 }
 
 module.exports = templateId

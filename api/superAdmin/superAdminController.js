@@ -6,7 +6,7 @@ const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
 const userListResponse = require("../../response/userlistResponse")
 const masterData = require("../../models/masterdata")
-const {sendSMS} = require("../../utils/sendotp")
+const { sendSMS } = require("../../utils/sendotp")
 const { sendMail } = require("../../utils/sendEmail")
 
 exports.createAdmin = async (req, res) => {
@@ -27,7 +27,8 @@ exports.createAdmin = async (req, res) => {
         workingState: req.body.workingState,
         workingCity: req.body.workingCity,
         workingArea: req.body.workingArea,
-        phoneNumber: req.body.phoneNumber
+        phoneNumber: req.body.phoneNumber,
+        panNumber: req.body.panNumber,
       })
       await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {
@@ -80,7 +81,10 @@ exports.createAdmin = async (req, res) => {
 
 exports.alluserlistforsuperadmin = async (req, res) => {
   try {
-    const userData = await users.find({}).lean()
+    let perPage = req.params?.perPage ? req.params.perPage : 25;
+    let page = req.params?.limit ? req.params.limit : 1;
+    let pageNo = page ? (page - 1) * perPage : 0;
+    const userData = await users.find({}).limit(perPage).skip(pageNo).lean()
     if (userData && userData.length > 0) {
       const promise = userData.map(async (value) => {
         value.id = await encrypt(value._id)
@@ -136,6 +140,34 @@ exports.downloadFile = async (req, res) => {
     return res.send(reponse)
   } catch (error) {
     logger.error("error in downloadFile function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.allDatafromMaster = async (req, res) => {
+  try {
+    let perPage = req.params?.perPage ? req.params.perPage : 25;
+    let page = req.params?.limit ? req.params.limit : 1;
+    let pageNo = page ? (page - 1) * perPage : 0;
+    const masterDatas = await masterData.find({}).limit(perPage).skip(pageNo).lean()
+    if (masterDatas && masterDatas.length > 0) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: masterDatas
+      })
+    } else {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: []
+      })
+    }
+  } catch (error) {
+    logger.error("error in allDatafromMaster function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

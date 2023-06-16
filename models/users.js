@@ -40,7 +40,11 @@ const user = new Schema(
     phoneNumber:{
       type: String,
       default: 0
-    }
+    },
+    panNumber:{
+      type: String,
+      default: 0
+    },
   },
   {
     timestamps: true,

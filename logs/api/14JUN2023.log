@@ -1,0 +1,3 @@
+14-06-2023 06:14:43 PM error: error in allDatafromMaster function ========MongoServerError: BSON field 'skip' value must be >= 0, actual value '-2' 
+14-06-2023 06:14:46 PM error: error in allDatafromMaster function ========MongoServerError: BSON field 'skip' value must be >= 0, actual value '-2' 
+14-06-2023 06:14:53 PM error: error in allDatafromMaster function ========MongoServerError: BSON field 'skip' value must be >= 0, actual value '-2' 

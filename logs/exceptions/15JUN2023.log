@@ -1,0 +1,373 @@
+15-06-2023 02:07:04 PM error: uncaughtException: runDailyCron is not a function
+TypeError: runDailyCron is not a function
+    at Object.<anonymous> (C:\Users\sagar\Desktop\Nikhil\Projects\Coke_App\app.js:17:1)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47 {
+  "error": {},
+  "stack": "TypeError: runDailyCron is not a function\n    at Object.<anonymous> (C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js:17:1)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Function.Module._load (node:internal/modules/cjs/loader:822:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47",
+  "exception": true,
+  "date": "Thu Jun 15 2023 14:07:04 GMT+0530 (India Standard Time)",
+  "process": {
+    "pid": 18064,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v16.16.0",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js"
+    ],
+    "memoryUsage": {
+      "rss": 113766400,
+      "heapTotal": 84750336,
+      "heapUsed": 62886088,
+      "external": 25710760,
+      "arrayBuffers": 21821712
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 13323
+  },
+  "trace": [
+    {
+      "column": 1,
+      "file": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js",
+      "function": null,
+      "line": 17,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1105,
+      "method": "_compile",
+      "native": false
+    },
+    {
+      "column": 10,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._extensions..js",
+      "line": 1159,
+      "method": ".js",
+      "native": false
+    },
+    {
+      "column": 32,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.load",
+      "line": 981,
+      "method": "load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 822,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/run_main",
+      "function": "Function.executeUserEntryPoint [as runMain]",
+      "line": 77,
+      "method": "executeUserEntryPoint [as runMain]",
+      "native": false
+    },
+    {
+      "column": 47,
+      "file": "node:internal/main/run_main_module",
+      "function": null,
+      "line": 17,
+      "method": null,
+      "native": false
+    }
+  ]
+}
+15-06-2023 02:07:38 PM error: uncaughtException: runDailyCron is not a function
+TypeError: runDailyCron is not a function
+    at Object.<anonymous> (C:\Users\sagar\Desktop\Nikhil\Projects\Coke_App\app.js:17:1)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47 {
+  "error": {},
+  "stack": "TypeError: runDailyCron is not a function\n    at Object.<anonymous> (C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js:17:1)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Function.Module._load (node:internal/modules/cjs/loader:822:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47",
+  "exception": true,
+  "date": "Thu Jun 15 2023 14:07:38 GMT+0530 (India Standard Time)",
+  "process": {
+    "pid": 16464,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v16.16.0",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js"
+    ],
+    "memoryUsage": {
+      "rss": 114315264,
+      "heapTotal": 84971520,
+      "heapUsed": 63353520,
+      "external": 25710760,
+      "arrayBuffers": 21821712
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 13357
+  },
+  "trace": [
+    {
+      "column": 1,
+      "file": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js",
+      "function": null,
+      "line": 17,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1105,
+      "method": "_compile",
+      "native": false
+    },
+    {
+      "column": 10,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._extensions..js",
+      "line": 1159,
+      "method": ".js",
+      "native": false
+    },
+    {
+      "column": 32,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.load",
+      "line": 981,
+      "method": "load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 822,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/run_main",
+      "function": "Function.executeUserEntryPoint [as runMain]",
+      "line": 77,
+      "method": "executeUserEntryPoint [as runMain]",
+      "native": false
+    },
+    {
+      "column": 47,
+      "file": "node:internal/main/run_main_module",
+      "function": null,
+      "line": 17,
+      "method": null,
+      "native": false
+    }
+  ]
+}
+15-06-2023 02:41:53 PM error: uncaughtException: await is only valid in async functions and the top level bodies of modules
+C:\Users\sagar\Desktop\Nikhil\Projects\Coke_App\crons\rundailycron.js:17
+      await Promise.all(promise)
+      ^^^^^
+
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1033:15)
+    at Module._compile (node:internal/modules/cjs/loader:1069:27)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (C:\Users\sagar\Desktop\Nikhil\Projects\Coke_App\app.js:8:25)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47 {
+  "error": {},
+  "stack": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\crons\\rundailycron.js:17\n      await Promise.all(promise)\n      ^^^^^\n\nSyntaxError: await is only valid in async functions and the top level bodies of modules\n    at Object.compileFunction (node:vm:352:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1033:15)\n    at Module._compile (node:internal/modules/cjs/loader:1069:27)\n    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Function.Module._load (node:internal/modules/cjs/loader:822:12)\n    at Module.require (node:internal/modules/cjs/loader:1005:19)\n    at require (node:internal/modules/cjs/helpers:102:18)\n    at Object.<anonymous> (C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js:8:25)\n    at Module._compile (node:internal/modules/cjs/loader:1105:14)\n    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)\n    at Module.load (node:internal/modules/cjs/loader:981:32)\n    at Function.Module._load (node:internal/modules/cjs/loader:822:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)\n    at node:internal/main/run_main_module:17:47",
+  "exception": true,
+  "date": "Thu Jun 15 2023 14:41:53 GMT+0530 (India Standard Time)",
+  "process": {
+    "pid": 14876,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v16.16.0",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js"
+    ],
+    "memoryUsage": {
+      "rss": 113971200,
+      "heapTotal": 87203840,
+      "heapUsed": 62959872,
+      "external": 25646952,
+      "arrayBuffers": 21757904
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 15411
+  },
+  "trace": [
+    {
+      "column": 18,
+      "file": "node:vm",
+      "function": "Object.compileFunction",
+      "line": 352,
+      "method": "compileFunction",
+      "native": false
+    },
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapSafe",
+      "line": 1033,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 27,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1069,
+      "method": "_compile",
+      "native": false
+    },
+    {
+      "column": 10,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._extensions..js",
+      "line": 1159,
+      "method": ".js",
+      "native": false
+    },
+    {
+      "column": 32,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.load",
+      "line": 981,
+      "method": "load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 822,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1005,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 18,
+      "file": "node:internal/modules/cjs/helpers",
+      "function": "require",
+      "line": 102,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 25,
+      "file": "C:\\Users\\sagar\\Desktop\\Nikhil\\Projects\\Coke_App\\app.js",
+      "function": null,
+      "line": 8,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1105,
+      "method": "_compile",
+      "native": false
+    },
+    {
+      "column": 10,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._extensions..js",
+      "line": 1159,
+      "method": ".js",
+      "native": false
+    },
+    {
+      "column": 32,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.load",
+      "line": 981,
+      "method": "load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 822,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/run_main",
+      "function": "Function.executeUserEntryPoint [as runMain]",
+      "line": 77,
+      "method": "executeUserEntryPoint [as runMain]",
+      "native": false
+    },
+    {
+      "column": 47,
+      "file": "node:internal/main/run_main_module",
+      "function": null,
+      "line": 17,
+      "method": null,
+      "native": false
+    }
+  ]
+}

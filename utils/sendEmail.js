@@ -6,7 +6,7 @@ module.exports.sendMail = async (data) => {
   try {
     const msg = {
       to: data.email,
-      from: 'divyeshgangwal@gmail.com',
+      from: 'nikhiltalwania@gmail.com',
       templateId: templateId.WELCOME_AND_PASSWORD,
       dynamicTemplateData: {
         email:data.email,

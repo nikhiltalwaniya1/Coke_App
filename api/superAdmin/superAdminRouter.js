@@ -12,8 +12,8 @@ router.get('/', (err, res) => {
 })
 router.post("/createAdmin", superAdminController.createAdmin)
 router.post("/importfile", superAdminController.importfile)
-router.get("/alluserlistforsuperadmin/:perPage/:limit", superAdminController.alluserlistforsuperadmin)
+router.get("/alluserlistforsuperadmin", superAdminController.alluserlistforsuperadmin)
 router.get("/downloadFIles", superAdminController.downloadFile)
-router.get("/allDatafromMaster/:perPage/:limit", superAdminController.allDatafromMaster)
+router.get("/allDatafromMaster", superAdminController.allDatafromMaster)
 
 module.exports = router

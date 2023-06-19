@@ -59,7 +59,7 @@ module.exports.login = async (req, res) => {
       })
     }
   } catch (error) {
-    logger.error("error in login========" + error)
+    console.log("error in login========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -126,7 +126,7 @@ module.exports.forgotPassword = async (req, res) => {
     }
     console.log("userData", userData)
   } catch (error) {
-    logger.error("error in forgotPassword========" + error)
+    console.log("error in forgotPassword========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

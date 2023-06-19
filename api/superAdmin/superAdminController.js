@@ -71,7 +71,7 @@ exports.createAdmin = async (req, res) => {
       })
     }
   } catch (error) {
-    logger.error("error in createAdmin function ========" + error)
+    console.log("error in createAdmin function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -104,7 +104,7 @@ exports.alluserlistforsuperadmin = async (req, res) => {
       })
     }
   } catch (error) {
-    logger.error("error in alluserlistforsuperadmin function ========" + error)
+    console.log("error in alluserlistforsuperadmin function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -122,7 +122,7 @@ exports.importfile = async (req, res) => {
       message: message.SUCCESS
     })
   } catch (error) {
-    logger.error("error in importfile function ========" + error)
+    console.log("error in importfile function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -139,7 +139,7 @@ exports.downloadFile = async (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename=example.xlsx');
     return res.send(reponse)
   } catch (error) {
-    logger.error("error in downloadFile function ========" + error)
+    console.log("error in downloadFile function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -167,7 +167,7 @@ exports.allDatafromMaster = async (req, res) => {
       })
     }
   } catch (error) {
-    logger.error("error in allDatafromMaster function ========" + error)
+    console.log("error in allDatafromMaster function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

@@ -21,12 +21,12 @@ module.exports.sendMail = async (data) => {
       console.log('Email sent successfully');
       return Promise.resolve('Email sent successfully')
     }).catch(error => {
-      logger.error("error in send mail function line 17   ", error)
+      console.log("error in send mail function line 17   ", error)
       return Promise.reject(error)
     })
 
   } catch (error) {
-    logger.error("error in send mail function line 21   ", error)
+    console.log("error in send mail function line 21   ", error)
     return Promise.reject(error)
   }
 }

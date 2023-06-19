@@ -17,7 +17,7 @@ module.exports.encrypt = async (data) => {
     const encryptedId = encrypted.toString('hex')
     return Promise.resolve(encryptedId)
   } catch (error) {
-    logger.error("Error in encrypt function... " + error)
+    console.log("Error in encrypt function... " + error)
     return Promise.reject(error)
   }
 }
@@ -31,7 +31,7 @@ module.exports.decrypt = async (data) => {
     return Promise.resolve(decrypted.toString());
   } catch (error) {
     console.log("Error in decrypt function... ", error)
-    logger.error("Error in decrypt function... " + error)
+    console.log("Error in decrypt function... " + error)
     return Promise.reject(error)
   }
 }
@@ -41,12 +41,12 @@ module.exports.encryptPassword = async (password) => {
     return new Promise((resolve, reject) => {
       bcrypt.genSalt(10, (err, salt) => {
         if (err) {
-          logger.error("Error in encryptPassword function line 40... " + err)
+          console.log("Error in encryptPassword function line 40... " + err)
           reject(err)
         }
         bcrypt.hash(password, salt, (err1, hash) => {
           if (err1) {
-            logger.error("Error in encryptPassword function line 40... " + err1)
+            console.log("Error in encryptPassword function line 40... " + err1)
             reject(err1)
           }
           resolve(hash)
@@ -55,7 +55,7 @@ module.exports.encryptPassword = async (password) => {
     })
   } catch (error) {
     console.log("Error in encryptPassword function... ", error)
-    logger.error("Error in encryptPassword function... " + error)
+    console.log("Error in encryptPassword function... " + error)
     return Promise.reject(error)
   }
 }
@@ -147,7 +147,7 @@ module.exports.downloadXlsxFile = async (data) => {
     const fileData = await workbook.outputAsync();
     return fileData;
   } catch (error) {
-    logger.error("error in downloadxlsxfile function line 118  ", error)
+    console.log("error in downloadxlsxfile function line 118  ", error)
     return Promise.reject(error)
   }
 }

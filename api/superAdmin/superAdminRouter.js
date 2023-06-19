@@ -10,6 +10,7 @@ router.get('/', (err, res) => {
     message: "Working"
   })
 })
+
 router.post("/createAdmin", superAdminController.createAdmin)
 router.post("/importfile", superAdminController.importfile)
 router.get("/alluserlistforsuperadmin", superAdminController.alluserlistforsuperadmin)

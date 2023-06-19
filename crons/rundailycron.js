@@ -25,7 +25,7 @@ module.exports.dailySendMail = async () => {
 
     })
   } catch (error) {
-    logger.error("error in dailySendMail function ========" + error)
+    console.log("error in dailySendMail function ========" + error)
     return Promise.reject(error)
   }
 }

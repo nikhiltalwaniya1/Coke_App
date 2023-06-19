@@ -28,7 +28,7 @@ module.exports.userDetails = async(email)=>{
       return Promise.resolve(null)
     }
   }catch(error){
-    logger.error
+    console.log
     return Promise.reject(error)
   }
 }

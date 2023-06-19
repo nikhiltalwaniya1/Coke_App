@@ -19,7 +19,7 @@ module.exports.sendOtp = async (phoneNumber) => {
       });
     });
   } catch (error) {
-    logger.error("error in send otp function...", logger)
+    console.log("error in send otp function...", logger)
     return Promise.reject(error)
   }
 }
@@ -31,11 +31,11 @@ module.exports.sendSMS = async (data) => {
       from: '+14302433046',
       to: `+91${data.phoneNumber}`
     }).then(message => console.log(message.sid)).catch((error)=>{
-      logger.error("error in send sms function line 34...", error)
+      console.log("error in send sms function line 34...", error)
     return Promise.reject(error)
     }) 
   } catch (error) {
-    logger.error("error in send sms function...", error)
+    console.log("error in send sms function...", error)
     return Promise.reject(error)
   }
 }

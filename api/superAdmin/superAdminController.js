@@ -162,12 +162,88 @@ exports.allDatafromMaster = async (req, res) => {
     } else {
       return res.send({
         status: statusCode.success,
-        message: message.SUCCESS,
+        message: message.Data_not_found,
         data: []
       })
     }
   } catch (error) {
     console.log("error in allDatafromMaster function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getAllState = async (req, res) => {
+  try {
+    const allStateData = await masterData.find({}, { _id: 0, state: 1 }).lean()
+    if (allStateData && allStateData.length > 0) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: allStateData
+      })
+    } else {
+      return res.send({
+        status: statusCode.success,
+        message: message.Data_not_found,
+        data: []
+      })
+    }
+  } catch (error) {
+    console.log("error in getAllState function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getAllCity = async (req, res) => {
+  try {
+    const allCityData = await masterData.find({ state: req.query.state }, { _id: 0, city: 1 }).lean()
+    if (allCityData && allCityData.length > 0) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: allCityData
+      })
+    } else {
+      return res.send({
+        status: statusCode.success,
+        message: message.Data_not_found,
+        data: []
+      })
+    }
+
+  } catch (error) {
+    console.log("error in getAllCity function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getAllArea = async (req, res) => {
+  try {
+    const areaData = await masterData.find({ state: req.query.state, city: req.query.city }, { _id: 0, area: 1 }).lean()
+    if (areaData && areaData.length > 0) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: areaData
+      })
+    } else {
+      return res.send({
+        status: statusCode.success,
+        message: message.Data_not_found,
+        data: []
+      })
+    }
+  } catch (error) {
+    console.log("error in getAllArea function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

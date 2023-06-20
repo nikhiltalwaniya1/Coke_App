@@ -16,5 +16,10 @@ router.post("/importfile", superAdminController.importfile)
 router.get("/alluserlistforsuperadmin", superAdminController.alluserlistforsuperadmin)
 router.get("/downloadFIles", superAdminController.downloadFile)
 router.get("/allDatafromMaster", superAdminController.allDatafromMaster)
+router.get("/getAllState", superAdminController.getAllState)
+router.get("/getAllCity", superAdminController.getAllCity)
+router.get("/getAllArea", superAdminController.getAllArea)
+
+
 
 module.exports = router

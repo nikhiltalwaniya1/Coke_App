@@ -14,7 +14,7 @@ exports.createAdmin = async (req, res) => {
     const userValidation = await superAdminService.checkDetails(req.body)
     if (userValidation != null) {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: userValidation
       })
     }
@@ -60,13 +60,13 @@ exports.createAdmin = async (req, res) => {
         })
       } else {
         return res.send({
-          status: statusCode.success,
+          status: statusCode.error,
           message: message.SOMETHING_WENT_WRONG
         })
       }
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Email_already_exist
       })
     }
@@ -99,7 +99,7 @@ exports.alluserlistforsuperadmin = async (req, res) => {
       })
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Data_not_found
       })
     }
@@ -161,7 +161,7 @@ exports.allDatafromMaster = async (req, res) => {
       })
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Data_not_found,
         data: []
       })
@@ -186,7 +186,7 @@ exports.getAllState = async (req, res) => {
       })
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Data_not_found,
         data: []
       })
@@ -211,7 +211,7 @@ exports.getAllCity = async (req, res) => {
       })
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Data_not_found,
         data: []
       })
@@ -237,7 +237,7 @@ exports.getAllArea = async (req, res) => {
       })
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Data_not_found,
         data: []
       })

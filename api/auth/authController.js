@@ -13,7 +13,7 @@ module.exports.login = async (req, res) => {
     const checkDetails = await authService.checkDetails(req.body)
     if (checkDetails != null) {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: checkDetails
       })
     }
@@ -25,7 +25,7 @@ module.exports.login = async (req, res) => {
         query = { email: req.body.email }
       } else {
         return res.send({
-          status: statusCode.success,
+          status: statusCode.error,
           message: message.Email_not_exist
         })
       }
@@ -48,13 +48,13 @@ module.exports.login = async (req, res) => {
         })
       } else {
         return res.send({
-          status: statusCode.success,
+          status: statusCode.error,
           message: message.Password_not_match
         })
       }
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Email_not_exist
       })
     }
@@ -77,7 +77,7 @@ module.exports.forgotPassword = async (req, res) => {
         query = { email: req.body.email }
       } else {
         return res.send({
-          status: statusCode.success,
+          status: statusCode.error,
           message: message.Email_not_exist
         })
       }
@@ -114,17 +114,16 @@ module.exports.forgotPassword = async (req, res) => {
         })
       } else {
         return res.send({
-          status: statusCode.success,
+          status: statusCode.error,
           message: message.message.SOMETHING_WENT_WRONG
         })
       }
     } else {
       return res.send({
-        status: statusCode.success,
+        status: statusCode.error,
         message: message.Email_not_exist
       })
     }
-    console.log("userData", userData)
   } catch (error) {
     console.log("error in forgotPassword========" + error)
     return res.send({

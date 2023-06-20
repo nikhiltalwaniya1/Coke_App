@@ -1,6 +1,6 @@
 const statusCode = {
-  success:200,
-  error:500
+  success:0,
+  error:1
 }
 
 const role = {

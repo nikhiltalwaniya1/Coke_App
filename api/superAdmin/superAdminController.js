@@ -5,6 +5,7 @@ const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
 const userListResponse = require("../../response/userlistResponse")
+const userResponse = require("../../response/userResponse")
 const masterData = require("../../models/masterdata")
 const { sendSMS } = require("../../utils/sendotp")
 const { sendMail } = require("../../utils/sendEmail")
@@ -81,14 +82,14 @@ exports.createAdmin = async (req, res) => {
 
 exports.alluserlistforsuperadmin = async (req, res) => {
   try {
-    let perPage = req.params?.perPage ? req.params.perPage : 25;
-    let page = req.params?.limit ? req.params.limit : 1;
+    let perPage = req.query?.perPage ? req.query.perPage : 25;
+    let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
     const userData = await users.find({}).limit(perPage).skip(pageNo).lean()
     if (userData && userData.length > 0) {
       const promise = userData.map(async (value) => {
         value.id = await encrypt(value._id)
-        const response = new userListResponse(value)
+        const response = new userResponse(value)
         return response
       })
       const resolvePromise = await Promise.all(promise)
@@ -149,8 +150,8 @@ exports.downloadFile = async (req, res) => {
 
 exports.allDatafromMaster = async (req, res) => {
   try {
-    let perPage = req.params?.perPage ? req.params.perPage : 25;
-    let page = req.params?.limit ? req.params.limit : 1;
+    let perPage = req.query?.perPage ? req.query.perPage : 25;
+    let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
     const masterDatas = await masterData.find({}).limit(perPage).skip(pageNo).lean()
     if (masterDatas && masterDatas.length > 0) {

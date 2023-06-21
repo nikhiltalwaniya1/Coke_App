@@ -39,18 +39,12 @@ module.exports.decrypt = async (data) => {
 module.exports.encryptPassword = async (password) => {
   try {
     return new Promise((resolve, reject) => {
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-          console.log("Error in encryptPassword function line 40... " + err)
-          reject(err)
+      bcrypt.hash(password, 10, (err1, hash) => {
+        if (err1) {
+          console.log("Error in encryptPassword function line 40... " + err1)
+          reject(err1)
         }
-        bcrypt.hash(password, salt, (err1, hash) => {
-          if (err1) {
-            console.log("Error in encryptPassword function line 40... " + err1)
-            reject(err1)
-          }
-          resolve(hash)
-        })
+        resolve(hash)
       })
     })
   } catch (error) {

@@ -85,6 +85,7 @@ exports.alluserlistforsuperadmin = async (req, res) => {
     let perPage = req.query?.perPage ? req.query.perPage : 25;
     let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
+    const count = await users.find({}).count()
     const userData = await users.find({}).limit(perPage).skip(pageNo).lean()
     if (userData && userData.length > 0) {
       const promise = userData.map(async (value) => {
@@ -96,7 +97,8 @@ exports.alluserlistforsuperadmin = async (req, res) => {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: resolvePromise
+        data: resolvePromise,
+        count: count
       })
     } else {
       return res.send({
@@ -153,12 +155,14 @@ exports.allDatafromMaster = async (req, res) => {
     let perPage = req.query?.perPage ? req.query.perPage : 25;
     let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
+    const count = await masterData.find({}).count()
     const masterDatas = await masterData.find({}).limit(perPage).skip(pageNo).lean()
     if (masterDatas && masterDatas.length > 0) {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: masterDatas
+        data: masterDatas,
+        count:count
       })
     } else {
       return res.send({

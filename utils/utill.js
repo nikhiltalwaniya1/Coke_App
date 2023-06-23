@@ -155,7 +155,21 @@ module.exports.generateRandomPassword = async (length) => {
   }
   return password;
 }
-
+// This function is use for remove duplicate entry of array
 module.exports.removeDuplicateValueInArray = async(array)=> {
-  return [...new Set(array)];
+  const newArray = [...new Set(array)]
+  console.log("newArray====", newArray)
+  return newArray;
+}
+
+//This function is use for remove duplicate entry of array of object
+module.exports.removeDuplicates = async (array, key)=> {
+  const uniqueKeys = new Set();
+  return array.filter((obj) => {
+    if (!uniqueKeys.has(obj[key])) {
+      uniqueKeys.add(obj[key]);
+      return true;
+    }
+    return false;
+  });
 }

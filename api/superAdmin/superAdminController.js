@@ -1,5 +1,5 @@
 const logger = require("../../utils/logger")
-const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp , removeDuplicateValueInArray} = require("../../utils/utill")
+const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp , removeDuplicates} = require("../../utils/utill")
 const { statusCode, role } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
@@ -183,7 +183,7 @@ exports.allDatafromMaster = async (req, res) => {
 exports.getAllState = async (req, res) => {
   try {
     const allStateData = await masterData.find({}, { _id: 0, state: 1 }).lean()
-    const finalArray = await removeDuplicateValueInArray(allStateData)
+    const finalArray = await removeDuplicates(allStateData, 'state')
     if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,
@@ -209,7 +209,7 @@ exports.getAllState = async (req, res) => {
 exports.getAllCity = async (req, res) => {
   try {
     const allCityData = await masterData.find({ state: req.query.state }, { _id: 0, city: 1 }).lean()
-    const finalArray = await removeDuplicateValueInArray(allCityData)
+    const finalArray = await removeDuplicates(allCityData, 'city')
     if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,
@@ -236,8 +236,7 @@ exports.getAllCity = async (req, res) => {
 exports.getAllArea = async (req, res) => {
   try {
     const areaData = await masterData.find({ state: req.query.state, city: req.query.city }, { _id: 0, area: 1 }).lean()
-    const finalArray = await removeDuplicateValueInArray(areaData)
-
+    const finalArray = await removeDuplicates(areaData, 'area')
     if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,

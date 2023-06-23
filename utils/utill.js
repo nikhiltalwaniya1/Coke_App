@@ -11,11 +11,10 @@ const XlsxPopulate = require('xlsx-populate');
 
 module.exports.encrypt = async (data) => {
   try {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey), iv);
-    let encrypted = cipher.update(data.toString());
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const encryptedId = encrypted.toString('hex')
-    return Promise.resolve(encryptedId)
+    const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv)
+    let encrypted = cipher.update(data.toString(), 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return Promise.resolve(iv.toString('hex') + encrypted);
   } catch (error) {
     console.log("Error in encrypt function... " + error)
     return Promise.reject(error)
@@ -24,11 +23,11 @@ module.exports.encrypt = async (data) => {
 
 module.exports.decrypt = async (data) => {
   try {
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
-    let encryptedText = Buffer.from(data, 'hex');
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return Promise.resolve(decrypted.toString());
+    const iv = Buffer.from(data.slice(0, 32), 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
+    let decrypted = decipher.update(data.slice(32), 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return Promise.resolve(decrypted);
   } catch (error) {
     console.log("Error in decrypt function... ", error)
     console.log("Error in decrypt function... " + error)
@@ -147,7 +146,7 @@ module.exports.downloadXlsxFile = async (data) => {
 }
 
 module.exports.generateRandomPassword = async (length) => {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let password = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
@@ -156,14 +155,14 @@ module.exports.generateRandomPassword = async (length) => {
   return password;
 }
 // This function is use for remove duplicate entry of array
-module.exports.removeDuplicateValueInArray = async(array)=> {
+module.exports.removeDuplicateValueInArray = async (array) => {
   const newArray = [...new Set(array)]
   console.log("newArray====", newArray)
   return newArray;
 }
 
 //This function is use for remove duplicate entry of array of object
-module.exports.removeDuplicates = async (array, key)=> {
+module.exports.removeDuplicates = async (array, key) => {
   const uniqueKeys = new Set();
   return array.filter((obj) => {
     if (!uniqueKeys.has(obj[key])) {

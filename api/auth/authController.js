@@ -34,9 +34,6 @@ module.exports.login = async (req, res) => {
     }
     const userData = await users.findOne(query).lean()
     if (userData) {
-      console.log("userData.password======", userData.password)
-      console.log("req.body.password======", req.body.password)
-
       const checkPassword = await comparePassword(userData.password, req.body.password)
       if (checkPassword) {
         delete (userData.password)

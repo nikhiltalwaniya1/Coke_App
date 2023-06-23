@@ -22,16 +22,13 @@ const user = new Schema(
       default:{},
     },
     workingState: {
-      type: String,
-      default: ''
+      type: Array
     },
     workingCity: {
-      type: String,
-      default: ''
+      type: Array
     },
     workingArea: {
-      type: String,
-      default: ''
+      type: Array
     },
     status: {
       type: String,

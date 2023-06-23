@@ -4,7 +4,6 @@ const { statusCode, role } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
-const userListResponse = require("../../response/userlistResponse")
 const userResponse = require("../../response/userResponse")
 const masterData = require("../../models/masterdata")
 const { sendSMS } = require("../../utils/sendotp")
@@ -48,13 +47,14 @@ exports.createAdmin = async (req, res) => {
         })
       } else if (req.body.role == role.SUB_USER) {
         const otp = await generateOtp(6)
+        console.log("otp======", otp)
         const obj = {
           password: otp,
           phoneNumber: req.body.phoneNumber
         }
         const encryptedPassword = await encryptPassword(`${otp}`)
         const updatePassword = await users.updateOne({ phoneNumber: req.body.phoneNumber }, { $set: { password: encryptedPassword } })
-        const sendOtp = await sendSMS(obj)
+        // const sendOtp = await sendSMS(obj)
         return res.send({
           status: statusCode.success,
           message: message.Registration_Done

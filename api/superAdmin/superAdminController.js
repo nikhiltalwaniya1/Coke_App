@@ -1,5 +1,5 @@
 const logger = require("../../utils/logger")
-const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp } = require("../../utils/utill")
+const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp , removeDuplicateValueInArray} = require("../../utils/utill")
 const { statusCode, role } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
@@ -183,11 +183,12 @@ exports.allDatafromMaster = async (req, res) => {
 exports.getAllState = async (req, res) => {
   try {
     const allStateData = await masterData.find({}, { _id: 0, state: 1 }).lean()
-    if (allStateData && allStateData.length > 0) {
+    const finalArray = await removeDuplicateValueInArray(allStateData)
+    if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: allStateData
+        data: finalArray
       })
     } else {
       return res.send({
@@ -208,11 +209,12 @@ exports.getAllState = async (req, res) => {
 exports.getAllCity = async (req, res) => {
   try {
     const allCityData = await masterData.find({ state: req.query.state }, { _id: 0, city: 1 }).lean()
-    if (allCityData && allCityData.length > 0) {
+    const finalArray = await removeDuplicateValueInArray(allCityData)
+    if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: allCityData
+        data: finalArray
       })
     } else {
       return res.send({
@@ -234,11 +236,13 @@ exports.getAllCity = async (req, res) => {
 exports.getAllArea = async (req, res) => {
   try {
     const areaData = await masterData.find({ state: req.query.state, city: req.query.city }, { _id: 0, area: 1 }).lean()
-    if (areaData && areaData.length > 0) {
+    const finalArray = await removeDuplicateValueInArray(areaData)
+
+    if (finalArray && finalArray.length > 0) {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: areaData
+        data: finalArray
       })
     } else {
       return res.send({

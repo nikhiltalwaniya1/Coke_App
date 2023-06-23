@@ -155,3 +155,7 @@ module.exports.generateRandomPassword = async (length) => {
   }
   return password;
 }
+
+module.exports.removeDuplicateValueInArray = async(array)=> {
+  return [...new Set(array)];
+}

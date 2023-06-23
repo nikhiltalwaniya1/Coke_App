@@ -29,6 +29,7 @@ exports.createAdmin = async (req, res) => {
         workingArea: req.body.workingArea,
         phoneNumber: req.body.phoneNumber,
         panNumber: req.body.panNumber,
+        createdBy: await decrypt(req.body.createdBy)
       })
       await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {

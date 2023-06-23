@@ -42,6 +42,9 @@ const user = new Schema(
       type: String,
       default: 0
     },
+    createdBy:{
+      type:String
+    }
   },
   {
     timestamps: true,

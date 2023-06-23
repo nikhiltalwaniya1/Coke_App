@@ -80,3 +80,29 @@ module.exports.getAllAdminAllotedList = async (req, res) => {
   }
 }
 
+module.exports.getSubUserList = async (req, res) => {
+  try {
+    const userId = await decrypt(req.query.id)
+    const allUser = await users.find({ createdBy: userId }).lean()
+    if (allUser && allUser.length > 0) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: allUser
+      })
+    } else {
+      return res.send({
+        status: statusCode.error,
+        message: message.Data_not_found,
+        data: []
+      })
+    }
+  } catch (error) {
+    console.log("error in getSubUserList function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+

@@ -17,8 +17,8 @@ router.get("/alluserlistforsuperadmin", superAdminController.alluserlistforsuper
 router.get("/downloadFIles", superAdminController.downloadFile)
 router.get("/allDatafromMaster", superAdminController.allDatafromMaster)
 router.get("/getAllState", superAdminController.getAllState)
-router.get("/getAllCity", superAdminController.getAllCity)
-router.get("/getAllArea", superAdminController.getAllArea)
+router.post("/getAllCity", superAdminController.getAllCity)
+router.post("/getAllArea", superAdminController.getAllArea)
 
 
 

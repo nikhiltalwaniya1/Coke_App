@@ -1,5 +1,5 @@
 const logger = require("../../utils/logger")
-const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp , removeDuplicates} = require("../../utils/utill")
+const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates } = require("../../utils/utill")
 const { statusCode, role } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
@@ -163,7 +163,7 @@ exports.allDatafromMaster = async (req, res) => {
         status: statusCode.success,
         message: message.SUCCESS,
         data: masterDatas,
-        count:count
+        count: count
       })
     } else {
       return res.send({
@@ -209,22 +209,30 @@ exports.getAllState = async (req, res) => {
 
 exports.getAllCity = async (req, res) => {
   try {
-    const allCityData = await masterData.find({ state: req.query.state }, { _id: 0, city: 1 }).lean()
-    const finalArray = await removeDuplicates(allCityData, 'city')
-    if (finalArray && finalArray.length > 0) {
-      return res.send({
-        status: statusCode.success,
-        message: message.SUCCESS,
-        data: finalArray
+    const stateArray = req.body.state
+    if (stateArray && stateArray.length > 0) {
+      let arrayOfCity = []
+      const promise = stateArray.map(async(valueOfState)=>{
+        const allCityData = await masterData.find({ state: valueOfState }, { _id: 0, city: 1 }).lean()
+        arrayOfCity.push(...allCityData)
+        return
       })
-    } else {
-      return res.send({
-        status: statusCode.error,
-        message: message.Data_not_found,
-        data: []
-      })
+      await Promise.all(promise)
+      const finalArray = await removeDuplicates(arrayOfCity, 'city')
+      if (finalArray && finalArray.length > 0) {
+        return res.send({
+          status: statusCode.success,
+          message: message.SUCCESS,
+          data: finalArray
+        })
+      } else {
+        return res.send({
+          status: statusCode.error,
+          message: message.Data_not_found,
+          data: []
+        })
+      }
     }
-
   } catch (error) {
     console.log("error in getAllCity function ========" + error)
     return res.send({
@@ -236,21 +244,33 @@ exports.getAllCity = async (req, res) => {
 
 exports.getAllArea = async (req, res) => {
   try {
-    const areaData = await masterData.find({ state: req.query.state, city: req.query.city }, { _id: 0, area: 1 }).lean()
-    const finalArray = await removeDuplicates(areaData, 'area')
-    if (finalArray && finalArray.length > 0) {
-      return res.send({
-        status: statusCode.success,
-        message: message.SUCCESS,
-        data: finalArray
+    const stateArray = req.body.state
+    const cityArray = req.body.city
+    let arrayOfArea = []
+    if(stateArray && cityArray && stateArray.length>0 && cityArray.length>0){
+      const promise = stateArray.map(async(valueOfState)=>{
+        const promise1 = cityArray.map(async(valueOfCity)=>{
+          const areaData = await masterData.find({ state: valueOfState, city: valueOfCity }, { _id: 0, area: 1 }).lean()
+          arrayOfArea.push(...areaData)
+        })
+        await Promise.all(promise1)
       })
-    } else {
-      return res.send({
-        status: statusCode.error,
-        message: message.Data_not_found,
-        data: []
-      })
-    }
+      await Promise.all(promise)
+      const finalArray = await removeDuplicates(arrayOfArea, 'area')
+      if (finalArray && finalArray.length > 0) {
+        return res.send({
+          status: statusCode.success,
+          message: message.SUCCESS,
+          data: finalArray
+        })
+      } else {
+        return res.send({
+          status: statusCode.error,
+          message: message.Data_not_found,
+          data: []
+        })
+      }
+    }    
   } catch (error) {
     console.log("error in getAllArea function ========" + error)
     return res.send({

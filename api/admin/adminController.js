@@ -4,6 +4,7 @@ const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const masterData = require("../../models/masterdata")
 const moment = require("moment")
+const userResponse = require("../../response/userResponse")
 
 module.exports.getAllAdminAllotedList = async (req, res) => {
   try {
@@ -86,10 +87,16 @@ module.exports.getSubUserList = async (req, res) => {
     const userId = await decrypt(req.query.id)
     const allUser = await users.find({ createdBy: userId }).lean()
     if (allUser && allUser.length > 0) {
+      const promise = allUser.map(async(valueOfUser)=>{
+        valueOfUser.id = await encrypt(valueOfUser._id)
+        const userDetails = new userResponse(valueOfUser)
+        return userDetails
+      })
+      const resolvePromise = await Promise.all(promise)
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: allUser
+        data: resolvePromise
       })
     } else {
       return res.send({

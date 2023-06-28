@@ -3,6 +3,7 @@ const { statusCode, role } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const masterData = require("../../models/masterdata")
+const moment = require("moment")
 
 module.exports.getAllAdminAllotedList = async (req, res) => {
   try {
@@ -106,3 +107,45 @@ module.exports.getSubUserList = async (req, res) => {
   }
 }
 
+module.exports.updateUserDetails = async(req, res)=>{
+  try{
+    const userId = await decrypt(req.body.id)
+    const reqObj = req.body
+    const updateUserDetails = await users.updateOne({_id:userId},{$set:{
+      name:reqObj.name,
+      email:reqObj.email,
+      workingState:reqObj.workingState,
+      workingCity:reqObj.workingCity,
+      workingArea:reqObj.workingArea,
+      phoneNumber:reqObj.phoneNumber
+    }})
+    return res.send({
+      status: statusCode.success,
+      message: message.SUCCESS,
+    })
+  }catch(error){
+    console.log("error in updateUserDetails function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+module.exports.deleteUser = async(req, res)=>{
+  try{
+    const userId = await decrypt(req.query.id)
+    const deleteUser = await users.deleteOne({_id:userId})
+    console.log("userId", userId)
+    return res.send({
+      status: statusCode.success,
+      message: message.SUCCESS,
+    })
+  }catch(error){
+    console.log("error in deleteUser function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}

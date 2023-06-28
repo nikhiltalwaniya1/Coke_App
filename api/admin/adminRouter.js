@@ -6,6 +6,8 @@ const adminController = require("./adminController")
 
 router.get("/getAllAdminAllotedList", adminController.getAllAdminAllotedList)
 router.get("/getSubUserList", adminController.getSubUserList)
+router.post("/updateUserDetails", adminController.updateUserDetails)
+router.delete("/deleteUser", adminController.deleteUser)
 
 
 

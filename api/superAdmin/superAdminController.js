@@ -212,7 +212,7 @@ exports.getAllCity = async (req, res) => {
     const stateArray = req.body.state
     if (stateArray && stateArray.length > 0) {
       let arrayOfCity = []
-      const promise = stateArray.map(async(valueOfState)=>{
+      const promise = stateArray.map(async (valueOfState) => {
         const allCityData = await masterData.find({ state: valueOfState }, { _id: 0, city: 1 }).lean()
         arrayOfCity.push(...allCityData)
         return
@@ -247,9 +247,9 @@ exports.getAllArea = async (req, res) => {
     const stateArray = req.body.state
     const cityArray = req.body.city
     let arrayOfArea = []
-    if(stateArray && cityArray && stateArray.length>0 && cityArray.length>0){
-      const promise = stateArray.map(async(valueOfState)=>{
-        const promise1 = cityArray.map(async(valueOfCity)=>{
+    if (stateArray && cityArray && stateArray.length > 0 && cityArray.length > 0) {
+      const promise = stateArray.map(async (valueOfState) => {
+        const promise1 = cityArray.map(async (valueOfCity) => {
           const areaData = await masterData.find({ state: valueOfState, city: valueOfCity }, { _id: 0, area: 1 }).lean()
           arrayOfArea.push(...areaData)
         })
@@ -270,9 +270,71 @@ exports.getAllArea = async (req, res) => {
           data: []
         })
       }
-    }    
+    }
   } catch (error) {
     console.log("error in getAllArea function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getAllOutlet = async (req, res) => {
+  try {
+    const state = req.body.state
+    const city = req.body.city
+    const area = req.body.area
+
+    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, nameofcustomer: 1 }).lean()
+    if (allStateData && allStateData.length > 0) {
+      // let arrayOfOutlet = []
+      const promise = allStateData.map(async(valueOfOutlet)=>{
+        const userId = await encrypt(valueOfOutlet._id)
+        valueOfOutlet._id = userId
+        return valueOfOutlet
+      })
+      const resolvePromise = await Promise.all(promise)
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: resolvePromise
+      })
+    } else {
+      return res.send({
+        status: statusCode.error,
+        message: message.Data_not_found,
+        data: []
+      })
+    }
+  } catch (error) {
+    console.log("error in getAllState function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getOutletDetails = async(req, res)=>{
+  try{
+    const userId = await decrypt(req.query.id)
+    const outletData = await masterData.findById({_id:userId}).lean()
+    if(outletData){
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: outletData
+      })
+    }else{
+      return res.send({
+        status: statusCode.error,
+        message: message.Data_not_found,
+        data: {}
+      })
+    }
+  }catch(error){
+    console.log("error in getOutletDetails function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

@@ -4,6 +4,10 @@ var mongoosePaginate = require('mongoose-paginate');
 
 const user = new Schema(
   {
+    name: {
+      type: String,
+      default: ''
+    },
     email: {
       type: String,
       default: '',
@@ -17,9 +21,9 @@ const user = new Schema(
       type: String,
       default: ''
     },
-    geoLocation:{
-      type:Object,
-      default:{},
+    geoLocation: {
+      type: Object,
+      default: {},
     },
     workingState: {
       type: Array
@@ -34,16 +38,16 @@ const user = new Schema(
       type: String,
       default: 'Active'
     },
-    phoneNumber:{
+    phoneNumber: {
       type: String,
       default: 0
     },
-    panNumber:{
+    panNumber: {
       type: String,
       default: 0
     },
-    createdBy:{
-      type:String
+    createdBy: {
+      type: String
     }
   },
   {

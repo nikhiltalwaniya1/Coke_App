@@ -84,7 +84,7 @@ module.exports.getAllAdminAllotedList = async (req, res) => {
 
 module.exports.getSubUserList = async (req, res) => {
   try {
-    const userId = await decrypt(req.query.createdBy)
+    const userId = await decrypt(req.query.id)
     const allUser = await users.find({ createdBy: userId }).lean()
     if (allUser && allUser.length > 0) {
       const promise = allUser.map(async(valueOfUser)=>{
@@ -116,7 +116,7 @@ module.exports.getSubUserList = async (req, res) => {
 
 module.exports.updateUserDetails = async(req, res)=>{
   try{
-    const userId = await decrypt(req.body.id)
+    const userId = await decrypt(req.body.createdBy)
     const reqObj = req.body
     const updateUserDetails = await users.updateOne({_id:userId},{$set:{
       name:reqObj.name,

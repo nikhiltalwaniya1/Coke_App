@@ -191,7 +191,14 @@ exports.allDatafromMaster = async (req, res) => {
 
 exports.getAllState = async (req, res) => {
   try {
-    const allStateData = await masterData.find({ status: status.NOT_ALLOTTED }, { _id: 0, state: 1 }).lean()
+    const userId = await decrypt(req.body.id)
+    let query = ''
+    if (req.body.role == role.SUPER_ADMIN) {
+      query = { status: status.NOT_ALLOTTED }
+    } else {
+      query = { allottedUserId: userId, status: status.ALLOTTED }
+    }
+    const allStateData = await masterData.find(query, { _id: 0, state: 1 }).lean()
     const finalArray = await removeDuplicates(allStateData, 'state')
     if (finalArray && finalArray.length > 0) {
       return res.send({
@@ -221,7 +228,14 @@ exports.getAllCity = async (req, res) => {
     if (stateArray && stateArray.length > 0) {
       let arrayOfCity = []
       const promise = stateArray.map(async (valueOfState) => {
-        const allCityData = await masterData.find({ state: valueOfState, status: status.NOT_ALLOTTED }, { _id: 0, city: 1 }).lean()
+        const userId = await decrypt(req.body.id)
+        let query = ''
+        if (req.body.role == role.SUPER_ADMIN) {
+          query = { status: valueOfState, status: status.NOT_ALLOTTED }
+        } else {
+          query = { allottedUserId: userId, status: valueOfState, status: status.ALLOTTED }
+        }
+        const allCityData = await masterData.find(query, { _id: 0, city: 1 }).lean()
         arrayOfCity.push(...allCityData)
         return
       })
@@ -254,11 +268,25 @@ exports.getAllArea = async (req, res) => {
   try {
     const stateArray = req.body.state
     const cityArray = req.body.city
+    const userId = await decrypt(req.body.id)
+    let query = ''
+    if (req.body.role == role.SUPER_ADMIN) {
+      query = { status: status.NOT_ALLOTTED }
+    } else {
+      query = { allottedUserId: userId, status: status.ALLOTTED }
+    }
     let arrayOfArea = []
     if (stateArray && cityArray && stateArray.length > 0 && cityArray.length > 0) {
       const promise = stateArray.map(async (valueOfState) => {
         const promise1 = cityArray.map(async (valueOfCity) => {
-          const areaData = await masterData.find({ state: valueOfState, city: valueOfCity, status: status.NOT_ALLOTTED }, { _id: 0, area: 1 }).lean()
+          const userId = await decrypt(req.body.id)
+          let query = ''
+          if (req.body.role == role.SUPER_ADMIN) {
+            query = { status: valueOfState, city: valueOfCity, status: status.NOT_ALLOTTED }
+          } else {
+            query = { allottedUserId: userId, status: valueOfState, city: valueOfCity, status: status.ALLOTTED }
+          }
+          const areaData = await masterData.find(query, { _id: 0, area: 1 }).lean()
           arrayOfArea.push(...areaData)
         })
         await Promise.all(promise1)
@@ -384,19 +412,19 @@ exports.getAllottedStateCityList = async (req, res) => {
     const state = req.body.workingState
     const city = req.body.workingCity
     const area = req.body.workingArea
-    if (state && state.length > 0 && city && city.length > 0 && area && area.length > 0){
+    if (state && state.length > 0 && city && city.length > 0 && area && area.length > 0) {
       let states = []
       let cities = []
       let areas = []
-      const promise = state.map(async(valueOfstate)=>{
-        const promise1 = city.map(async(valueOfcity)=>{
-          const promise2 = area.map(async(valueOfarea)=>{
+      const promise = state.map(async (valueOfstate) => {
+        const promise1 = city.map(async (valueOfcity) => {
+          const promise2 = area.map(async (valueOfarea) => {
             const masterDataDetails = await masterData.findOne({
-              allottedUserId:userId,
-              state:valueOfstate,
-              city:valueOfcity,
-              area:valueOfarea,
-              status:status.ALLOTTED
+              allottedUserId: userId,
+              state: valueOfstate,
+              city: valueOfcity,
+              area: valueOfarea,
+              status: status.ALLOTTED
             }).lean()
             states.push(masterDataDetails.state)
             cities.push(masterDataDetails.city)
@@ -412,22 +440,22 @@ exports.getAllottedStateCityList = async (req, res) => {
       const finalCityArray = await removeDuplicates(cities, 'city')
       const finalAreaArray = await removeDuplicates(areas, 'city')
       let obj = {
-        state:finalStateArray,
-        city:finalCityArray,
-        area:finalAreaArray
+        state: finalStateArray,
+        city: finalCityArray,
+        area: finalAreaArray
       }
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
         data: obj
       })
-    }else{
+    } else {
       return res.send({
         status: statusCode.error,
         message: message.SOMETHING_WENT_WRONG
       })
     }
-      console.log("req body", req.body)
+    console.log("req body", req.body)
   } catch (error) {
     console.log("error in getAllottedStateCityList function ========" + error)
     return res.send({

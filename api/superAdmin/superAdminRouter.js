@@ -21,6 +21,8 @@ router.post("/getAllCity", superAdminController.getAllCity)
 router.post("/getAllArea", superAdminController.getAllArea)
 router.post("/getAllOutlet", superAdminController.getAllOutlet)
 router.get("/getOutletDetails", superAdminController.getOutletDetails)
+router.post("/getAllottedStateCityList", superAdminController.getAllottedStateCityList)
+
 
 
 

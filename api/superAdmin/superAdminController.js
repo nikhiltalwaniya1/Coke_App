@@ -19,7 +19,7 @@ exports.createAdmin = async (req, res) => {
       })
     }
     const userData = await superAdminService.userDetails(req.body.email)
-    if(userData == null){
+    if (userData == null) {
       const saveUser = new users({
         name: req.body.name,
         email: req.body.email,
@@ -74,7 +74,7 @@ exports.createAdmin = async (req, res) => {
         })
       }
 
-    }else{
+    } else {
       return res.send({
         status: statusCode.error,
         message: message.Email_already_exist
@@ -191,7 +191,7 @@ exports.allDatafromMaster = async (req, res) => {
 
 exports.getAllState = async (req, res) => {
   try {
-    const allStateData = await masterData.find({status: status.NOT_ALLOTTED}, { _id: 0, state: 1 }).lean()
+    const allStateData = await masterData.find({ status: status.NOT_ALLOTTED }, { _id: 0, state: 1 }).lean()
     const finalArray = await removeDuplicates(allStateData, 'state')
     if (finalArray && finalArray.length > 0) {
       return res.send({
@@ -376,4 +376,63 @@ async function allotteeWork(state, city, area, adminName, subUserName, id) {
     await Promise.all(promise1)
   })
   await Promise.all(promise)
+}
+
+exports.getAllottedStateCityList = async (req, res) => {
+  try {
+    const userId = await decrypt(req.body.id)
+    const state = req.body.workingState
+    const city = req.body.workingCity
+    const area = req.body.workingArea
+    if (state && state.length > 0 && city && city.length > 0 && area && area.length > 0){
+      let states = []
+      let cities = []
+      let areas = []
+      const promise = state.map(async(valueOfstate)=>{
+        const promise1 = city.map(async(valueOfcity)=>{
+          const promise2 = area.map(async(valueOfarea)=>{
+            const masterDataDetails = await masterData.findOne({
+              allottedUserId:userId,
+              state:valueOfstate,
+              city:valueOfcity,
+              area:valueOfarea,
+              status:status.ALLOTTED
+            }).lean()
+            states.push(masterDataDetails.state)
+            cities.push(masterDataDetails.city)
+            areas.push(masterDataDetails.area)
+            return
+          })
+          await Promise.all(promise2)
+        })
+        await Promise.all(promise1)
+      })
+      await Promise.all(promise)
+      const finalStateArray = await removeDuplicates(states, 'state')
+      const finalCityArray = await removeDuplicates(cities, 'city')
+      const finalAreaArray = await removeDuplicates(areas, 'city')
+      let obj = {
+        state:finalStateArray,
+        city:finalCityArray,
+        area:finalAreaArray
+      }
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: obj
+      })
+    }else{
+      return res.send({
+        status: statusCode.error,
+        message: message.SOMETHING_WENT_WRONG
+      })
+    }
+      console.log("req body", req.body)
+  } catch (error) {
+    console.log("error in getAllottedStateCityList function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
 }

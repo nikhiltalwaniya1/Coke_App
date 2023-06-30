@@ -1,6 +1,6 @@
 const logger = require("../../utils/logger")
 const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates } = require("../../utils/utill")
-const { statusCode, role } = require("../../utils/constant")
+const { statusCode, role, status } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
@@ -19,8 +19,9 @@ exports.createAdmin = async (req, res) => {
       })
     }
     const userData = await superAdminService.userDetails(req.body.email)
-    if (userData == null) {
+    if(userData == null){
       const saveUser = new users({
+        name: req.body.name,
         email: req.body.email,
         role: req.body.role,
         geoLocation: req.body.geoLocation,
@@ -31,12 +32,15 @@ exports.createAdmin = async (req, res) => {
         panNumber: req.body.panNumber,
         createdBy: await decrypt(req.body.createdBy)
       })
-      await saveUser.save()
+      const saveUserDetails = await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {
         const password = await generateRandomPassword(8)
         console.log("password........", password)
         const encryptedPassword = await encryptPassword('12345678')
         const updatePassword = await users.updateOne({ email: req.body.email }, { $set: { password: encryptedPassword } })
+        if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null)) {
+          await allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+        }
         let obj = {
           email: req.body.email,
           password: password
@@ -53,8 +57,11 @@ exports.createAdmin = async (req, res) => {
           password: otp,
           phoneNumber: req.body.phoneNumber
         }
-        const encryptedPassword = await encryptPassword(`${otp}`)
-        const updatePassword = await users.updateOne({ phoneNumber: req.body.phoneNumber }, { $set: { password: encryptedPassword } })
+        const encryptedPassword = await encryptPassword('12345678')
+        const updatePassword = await users.updateOne({ _id: saveUserDetails._id }, { $set: { password: encryptedPassword } })
+        if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null)) {
+          await allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+        }
         // const sendOtp = await sendSMS(obj)
         return res.send({
           status: statusCode.success,
@@ -66,7 +73,8 @@ exports.createAdmin = async (req, res) => {
           message: message.SOMETHING_WENT_WRONG
         })
       }
-    } else {
+
+    }else{
       return res.send({
         status: statusCode.error,
         message: message.Email_already_exist
@@ -183,7 +191,7 @@ exports.allDatafromMaster = async (req, res) => {
 
 exports.getAllState = async (req, res) => {
   try {
-    const allStateData = await masterData.find({}, { _id: 0, state: 1 }).lean()
+    const allStateData = await masterData.find({status: status.NOT_ALLOTTED}, { _id: 0, state: 1 }).lean()
     const finalArray = await removeDuplicates(allStateData, 'state')
     if (finalArray && finalArray.length > 0) {
       return res.send({
@@ -213,7 +221,7 @@ exports.getAllCity = async (req, res) => {
     if (stateArray && stateArray.length > 0) {
       let arrayOfCity = []
       const promise = stateArray.map(async (valueOfState) => {
-        const allCityData = await masterData.find({ state: valueOfState }, { _id: 0, city: 1 }).lean()
+        const allCityData = await masterData.find({ state: valueOfState, status: status.NOT_ALLOTTED }, { _id: 0, city: 1 }).lean()
         arrayOfCity.push(...allCityData)
         return
       })
@@ -250,7 +258,7 @@ exports.getAllArea = async (req, res) => {
     if (stateArray && cityArray && stateArray.length > 0 && cityArray.length > 0) {
       const promise = stateArray.map(async (valueOfState) => {
         const promise1 = cityArray.map(async (valueOfCity) => {
-          const areaData = await masterData.find({ state: valueOfState, city: valueOfCity }, { _id: 0, area: 1 }).lean()
+          const areaData = await masterData.find({ state: valueOfState, city: valueOfCity, status: status.NOT_ALLOTTED }, { _id: 0, area: 1 }).lean()
           arrayOfArea.push(...areaData)
         })
         await Promise.all(promise1)
@@ -289,7 +297,7 @@ exports.getAllOutlet = async (req, res) => {
     const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, nameofcustomer: 1 }).lean()
     if (allStateData && allStateData.length > 0) {
       // let arrayOfOutlet = []
-      const promise = allStateData.map(async(valueOfOutlet)=>{
+      const promise = allStateData.map(async (valueOfOutlet) => {
         const userId = await encrypt(valueOfOutlet._id)
         valueOfOutlet._id = userId
         return valueOfOutlet
@@ -316,28 +324,56 @@ exports.getAllOutlet = async (req, res) => {
   }
 }
 
-exports.getOutletDetails = async(req, res)=>{
-  try{
+exports.getOutletDetails = async (req, res) => {
+  try {
     const userId = await decrypt(req.query.id)
-    const outletData = await masterData.findById({_id:userId}).lean()
-    if(outletData){
+    const outletData = await masterData.findById({ _id: userId }).lean()
+    if (outletData) {
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
         data: outletData
       })
-    }else{
+    } else {
       return res.send({
         status: statusCode.error,
         message: message.Data_not_found,
         data: {}
       })
     }
-  }catch(error){
+  } catch (error) {
     console.log("error in getOutletDetails function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
     })
   }
+}
+
+async function allotteeWork(state, city, area, adminName, subUserName, id) {
+  const promise = state.map(async (valueOfState) => {
+    const promise1 = city.map(async (valueOfCity) => {
+      const promise2 = area.map(async (valueOfarea) => {
+        const getData = await masterData.findOne({})
+        const updateMasterData = await masterData.updateOne({
+          state: valueOfState,
+          city: valueOfCity,
+          area: valueOfarea
+        },
+          {
+            $set: {
+              allottedUserId: id,
+              adminName: adminName ? adminName : '',
+              subUserName: subUserName ? subUserName : '',
+              status: status.ALLOTTED
+            }
+          })
+        console.log("updateMasterData=====", updateMasterData)
+        return
+      })
+      await Promise.all(promise2)
+    })
+    await Promise.all(promise1)
+  })
+  await Promise.all(promise)
 }

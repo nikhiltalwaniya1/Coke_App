@@ -47,6 +47,22 @@ const masterdata = new Schema(
     manufectureSrNo: {
       type: String,
       default: ''
+    },
+    allottedUserId:{
+      type: String,
+      default:''
+    },
+    adminName:{
+      type: String,
+      default:''
+    },
+    subUserName:{
+      type: String,
+      default:''
+    },
+    status:{
+      type: String,
+      default:'Not Allotted'
     }
   },
   {

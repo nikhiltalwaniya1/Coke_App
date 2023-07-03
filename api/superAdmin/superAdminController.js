@@ -231,7 +231,7 @@ exports.getAllCity = async (req, res) => {
         const userId = await decrypt(req.body.id)
         let query = ''
         if (req.body.role == role.SUPER_ADMIN) {
-          query = { status: valueOfState, status: status.NOT_ALLOTTED }
+          query = { state: valueOfState, status: status.NOT_ALLOTTED }
         } else {
           query = { allottedUserId: userId, status: valueOfState, status: status.ALLOTTED }
         }
@@ -268,13 +268,6 @@ exports.getAllArea = async (req, res) => {
   try {
     const stateArray = req.body.state
     const cityArray = req.body.city
-    const userId = await decrypt(req.body.id)
-    let query = ''
-    if (req.body.role == role.SUPER_ADMIN) {
-      query = { status: status.NOT_ALLOTTED }
-    } else {
-      query = { allottedUserId: userId, status: status.ALLOTTED }
-    }
     let arrayOfArea = []
     if (stateArray && cityArray && stateArray.length > 0 && cityArray.length > 0) {
       const promise = stateArray.map(async (valueOfState) => {
@@ -282,9 +275,9 @@ exports.getAllArea = async (req, res) => {
           const userId = await decrypt(req.body.id)
           let query = ''
           if (req.body.role == role.SUPER_ADMIN) {
-            query = { status: valueOfState, city: valueOfCity, status: status.NOT_ALLOTTED }
+            query = { state: valueOfState, city: valueOfCity, status: status.NOT_ALLOTTED }
           } else {
-            query = { allottedUserId: userId, status: valueOfState, city: valueOfCity, status: status.ALLOTTED }
+            query = { allottedUserId: userId, state: valueOfState, city: valueOfCity, status: status.ALLOTTED }
           }
           const areaData = await masterData.find(query, { _id: 0, area: 1 }).lean()
           arrayOfArea.push(...areaData)

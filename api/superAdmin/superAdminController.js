@@ -19,6 +19,12 @@ exports.createAdmin = async (req, res) => {
       })
     }
     const userData = await superAdminService.userDetails(req.body.email)
+    let createdby = ''
+    console.log("req.body.createdby===", req.body.createdBy);
+    if(req.body.role == (role.ADMIN || role.SUB_USER)){
+      createdby = await decrypt(req.body.createdBy)
+    }
+
     if (userData == null) {
       const saveUser = new users({
         name: req.body.name,
@@ -30,7 +36,7 @@ exports.createAdmin = async (req, res) => {
         workingArea: req.body.workingArea,
         phoneNumber: req.body.phoneNumber,
         panNumber: req.body.panNumber,
-        createdBy: await decrypt(req.body.createdBy)
+        createdBy:createdby
       })
       const saveUserDetails = await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {
@@ -229,6 +235,7 @@ exports.getAllCity = async (req, res) => {
       let arrayOfCity = []
       const promise = stateArray.map(async (valueOfState) => {
         const userId = await decrypt(req.body.id)
+        console.log("userId=======", userId)
         let query = ''
         if (req.body.role == role.SUPER_ADMIN) {
           query = { state: valueOfState, status: status.NOT_ALLOTTED }

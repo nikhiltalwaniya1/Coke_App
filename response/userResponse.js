@@ -1,5 +1,6 @@
 module.exports = class {
   constructor(instance) {
+    this.name = instance.name ? instance.name : ''
     this.id = instance.id ? instance.id : ''
     this.email = instance.email ? instance.email : ''
     this.geoLocation = instance.geoLocation ? instance.geoLocation : ''

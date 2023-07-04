@@ -20,11 +20,9 @@ exports.createAdmin = async (req, res) => {
     }
     const userData = await superAdminService.userDetails(req.body.email)
     let createdby = ''
-    console.log("req.body.createdby===", req.body.createdBy);
-    if(req.body.role == (role.ADMIN || role.SUB_USER)){
+    if ((req.body.role == role.ADMIN) || (req.body.role == role.SUB_USER)) {
       createdby = await decrypt(req.body.createdBy)
     }
-
     if (userData == null) {
       const saveUser = new users({
         name: req.body.name,
@@ -36,16 +34,15 @@ exports.createAdmin = async (req, res) => {
         workingArea: req.body.workingArea,
         phoneNumber: req.body.phoneNumber,
         panNumber: req.body.panNumber,
-        createdBy:createdby
+        createdBy: createdby
       })
       const saveUserDetails = await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {
         const password = await generateRandomPassword(8)
-        console.log("password........", password)
         const encryptedPassword = await encryptPassword('12345678')
-        const updatePassword = await users.updateOne({ email: req.body.email }, { $set: { password: encryptedPassword } })
-        if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null)) {
-          await allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+        const updatePassword = await users.updateOne({ _id: saveUserDetails._id }, { $set: { password: encryptedPassword } })
+        if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null) && req.body.role == role.ADMIN) {
+          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
         }
         let obj = {
           email: req.body.email,
@@ -58,7 +55,6 @@ exports.createAdmin = async (req, res) => {
         })
       } else if (req.body.role == role.SUB_USER) {
         const otp = await generateOtp(6)
-        console.log("otp======", otp)
         const obj = {
           password: otp,
           phoneNumber: req.body.phoneNumber
@@ -66,20 +62,14 @@ exports.createAdmin = async (req, res) => {
         const encryptedPassword = await encryptPassword('12345678')
         const updatePassword = await users.updateOne({ _id: saveUserDetails._id }, { $set: { password: encryptedPassword } })
         if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null)) {
-          await allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
         }
         // const sendOtp = await sendSMS(obj)
         return res.send({
           status: statusCode.success,
           message: message.Registration_Done
         })
-      } else {
-        return res.send({
-          status: statusCode.error,
-          message: message.SOMETHING_WENT_WRONG
-        })
       }
-
     } else {
       return res.send({
         status: statusCode.error,
@@ -376,34 +366,6 @@ exports.getOutletDetails = async (req, res) => {
       message: message.SOMETHING_WENT_WRONG
     })
   }
-}
-
-async function allotteeWork(state, city, area, adminName, subUserName, id) {
-  const promise = state.map(async (valueOfState) => {
-    const promise1 = city.map(async (valueOfCity) => {
-      const promise2 = area.map(async (valueOfarea) => {
-        const getData = await masterData.findOne({})
-        const updateMasterData = await masterData.updateOne({
-          state: valueOfState,
-          city: valueOfCity,
-          area: valueOfarea
-        },
-          {
-            $set: {
-              allottedUserId: id,
-              adminName: adminName ? adminName : '',
-              subUserName: subUserName ? subUserName : '',
-              status: status.ALLOTTED
-            }
-          })
-        console.log("updateMasterData=====", updateMasterData)
-        return
-      })
-      await Promise.all(promise2)
-    })
-    await Promise.all(promise1)
-  })
-  await Promise.all(promise)
 }
 
 exports.getAllottedStateCityList = async (req, res) => {

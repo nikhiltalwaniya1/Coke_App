@@ -72,9 +72,13 @@ module.exports.createToken = async (userData) => {
 }
 
 module.exports.generateOtp = (length) => {
-  return Math.floor(
-    Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1)
-  );
+  try{
+    return Math.floor(
+      Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1)
+    );
+  }catch(error){
+    return Promise.reject(error)
+  }
 }
 
 module.exports.uploadXlsx = (data) => {

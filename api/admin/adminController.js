@@ -5,6 +5,7 @@ const users = require("../../models/users")
 const masterData = require("../../models/masterdata")
 const moment = require("moment")
 const userResponse = require("../../response/userResponse")
+const superAdminService = require("../superAdmin/superAdminService")
 
 module.exports.getAllAdminAllotedList = async (req, res) => {
   try {
@@ -87,7 +88,7 @@ module.exports.getSubUserList = async (req, res) => {
     const userId = await decrypt(req.query.id)
     const allUser = await users.find({ createdBy: userId }).lean()
     if (allUser && allUser.length > 0) {
-      const promise = allUser.map(async(valueOfUser)=>{
+      const promise = allUser.map(async (valueOfUser) => {
         valueOfUser.id = await encrypt(valueOfUser._id)
         const userDetails = new userResponse(valueOfUser)
         return userDetails
@@ -114,23 +115,26 @@ module.exports.getSubUserList = async (req, res) => {
   }
 }
 
-module.exports.updateUserDetails = async(req, res)=>{
-  try{
+module.exports.updateUserDetails = async (req, res) => {
+  try {
     const userId = await decrypt(req.body.createdBy)
     const reqObj = req.body
-    const updateUserDetails = await users.updateOne({_id:userId},{$set:{
-      name:reqObj.name,
-      email:reqObj.email,
-      workingState:reqObj.workingState,
-      workingCity:reqObj.workingCity,
-      workingArea:reqObj.workingArea,
-      phoneNumber:reqObj.phoneNumber
-    }})
+    const updateUserDetails = await users.updateOne({ _id: userId }, {
+      $set: {
+        name: reqObj.name,
+        email: reqObj.email,
+        workingState: reqObj.workingState,
+        workingCity: reqObj.workingCity,
+        workingArea: reqObj.workingArea,
+        phoneNumber: reqObj.phoneNumber
+      }
+    })
+    const updateMasterData = await superAdminService.allotteeWork(reqObj.workingState, reqObj.workingCity, reqObj.workingArea, reqObj.adminName, reqObj.subUserName, userId)
     return res.send({
       status: statusCode.success,
       message: message.SUCCESS,
     })
-  }catch(error){
+  } catch (error) {
     console.log("error in updateUserDetails function ========" + error)
     return res.send({
       status: statusCode.error,
@@ -139,16 +143,16 @@ module.exports.updateUserDetails = async(req, res)=>{
   }
 }
 
-module.exports.deleteUser = async(req, res)=>{
-  try{
+module.exports.deleteUser = async (req, res) => {
+  try {
     const userId = await decrypt(req.query.id)
-    const deleteUser = await users.deleteOne({_id:userId})
-    console.log("userId", userId)
+    const deleteUser = await users.deleteOne({ _id: userId })
+    const updateMasterData = await masterData.updateMany({allottedUserId:userId},{$set:{allottedUserId:"", adminName:"",subUserName:"", status:"Not Allotted"}})
     return res.send({
       status: statusCode.success,
       message: message.SUCCESS,
     })
-  }catch(error){
+  } catch (error) {
     console.log("error in deleteUser function ========" + error)
     return res.send({
       status: statusCode.error,

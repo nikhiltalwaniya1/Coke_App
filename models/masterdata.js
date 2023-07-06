@@ -29,8 +29,8 @@ const masterdata = new Schema(
       default: ''
     },
     coolerModel: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
     },
     coolerType: {
       type: String,
@@ -63,6 +63,22 @@ const masterdata = new Schema(
     status:{
       type: String,
       default:'Not Allotted'
+    },
+    other:{
+      type: String,
+      default:''
+    },
+    outletStatus:{
+      type: String,
+      default:''
+    },
+    coolerStatus:{
+      type: String,
+      default:''
+    },
+    jobStatus:{
+      type: String,
+      default:'Not Done'
     }
   },
   {

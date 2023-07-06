@@ -6,7 +6,8 @@ const message = {
   Password_not_match:"Invaild Password",
   SUCCESS:"Success",
   SOMETHING_WENT_WRONG:"Something went wrong",
-  Password_Sended:"Password successfully sended..."
+  Password_Sended:"Password successfully sended...",
+  Details_not_matched:"Details not metched"
 }
 
 module.exports = {

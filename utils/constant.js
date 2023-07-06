@@ -14,9 +14,39 @@ const status = {
   NOT_ALLOTTED:"Not Allotted"
 }
 
+const name = {
+  Super_Admin_Name:"revo"
+}
+
+const userStatus = {
+  ACTIVE:"Active",
+  INACTIVE:"Inactive"
+}
+
+const jobStatus={
+  DONE:"Done",
+  NOT_DONE:"Not Done"
+}
+
+const outletStatus = {
+  OPEN:"Outlet open",
+  CLOSE:"Outlet close",
+  NOT_FOUND:"Outlet not found"
+}
+
+const coolerStatus = {
+  FOUND:"Found",
+  NOT_FOUND:"Not Found"
+}
+
 module.exports = {
   statusCode,
   role,
-  status
+  status,
+  name,
+  userStatus,
+  jobStatus,
+  outletStatus,
+  coolerStatus
 }
 

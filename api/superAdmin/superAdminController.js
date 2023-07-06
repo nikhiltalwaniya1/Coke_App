@@ -91,7 +91,7 @@ exports.alluserlistforsuperadmin = async (req, res) => {
     let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
     const count = await users.find({}).count()
-    const userData = await users.find({}).limit(perPage).skip(pageNo).lean()
+    const userData = await users.find({role:{$ne:role.SUPER_ADMIN}}).limit(perPage).skip(pageNo).lean()
     if (userData && userData.length > 0) {
       const promise = userData.map(async (value) => {
         value.id = await encrypt(value._id)
@@ -188,6 +188,7 @@ exports.allDatafromMaster = async (req, res) => {
 exports.getAllState = async (req, res) => {
   try {
     const userId = await decrypt(req.body.id)
+    console.log("userId====", userId)
     let query = ''
     if (req.body.role == role.SUPER_ADMIN) {
       query = { status: status.NOT_ALLOTTED }
@@ -312,11 +313,11 @@ exports.getAllOutlet = async (req, res) => {
     const city = req.body.city
     const area = req.body.area
 
-    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, nameofcustomer: 1 }).lean()
+    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1,customerId:0, nameofcustomer: 1 }).lean()
     if (allStateData && allStateData.length > 0) {
       // let arrayOfOutlet = []
       const promise = allStateData.map(async (valueOfOutlet) => {
-        const userId = await encrypt(valueOfOutlet._id)
+        const userId = await encrypt(valueOfOutlet.customerId)
         valueOfOutlet._id = userId
         return valueOfOutlet
       })
@@ -344,13 +345,39 @@ exports.getAllOutlet = async (req, res) => {
 
 exports.getOutletDetails = async (req, res) => {
   try {
-    const userId = await decrypt(req.query.id)
-    const outletData = await masterData.findById({ _id: userId }).lean()
+    // const userId = await decrypt(req.query.id)
+    const userId = req.query.id
+    const outletData = await masterData.find({ customerId: userId }).lean()    
     if (outletData) {
+      let equipmentSrNoArray = []
+      let customerId = ''
+      const promise = outletData.map(async(valueOfMasterData)=>{
+        customerId = await encrypt(valueOfMasterData.customerId)
+        let equipmentObj = {
+          equipmentSrNo:valueOfMasterData.equipmentSrNo,
+          manufectureSrNo:valueOfMasterData.manufectureSrNo
+        }
+        equipmentSrNoArray.push(equipmentObj)
+        return
+      })
+      await Promise.all(promise)
+      let obj = {
+        _id: await encrypt(outletData[0]._id),
+        customerId: await encrypt(outletData[0].customerId),
+        nameofcustomer: outletData[0].nameofcustomer,
+        address: outletData[0].address,
+        state: outletData[0].state,
+        city: outletData[0].city,
+        area: outletData[0].area,
+        coolerModel: outletData[0].coolerModel,
+        coolerType: outletData[0].coolerType,
+        manufecture: outletData[0].manufecture,
+        equipmentAndmanufecture: equipmentSrNoArray,
+      }
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: outletData
+        data: obj
       })
     } else {
       return res.send({

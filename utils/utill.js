@@ -176,3 +176,5 @@ module.exports.removeDuplicates = async (array, key) => {
     return false;
   });
 }
+
+//This function is use for 

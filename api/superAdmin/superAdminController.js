@@ -1,6 +1,6 @@
 const logger = require("../../utils/logger")
 const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates, clearDataBase } = require("../../utils/utill")
-const { statusCode, role, status } = require("../../utils/constant")
+const { statusCode, role, status, sheetStatus } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
@@ -138,13 +138,24 @@ exports.importfile = async (req, res) => {
       // Create folder in S3
       const createFolder = await createS3Folder(fileName)
       // Get data from master sheet 
-      const masterSheetData = await masterSheet.find({sheetStatus:sheetStatus.NOT_DONE}).lean()
-      // update master sheet
-      const updateMasterSheet = await masterSheet.updateOne(
-        {sheetName:updateMasterSheet.sheetName},
-        {$set:{
-          sheetName:fileName
-        }})
+      const masterSheetData = await masterSheet.findOne({ sheetStatus: sheetStatus.NOT_DONE }).lean()
+      console.log("masterSheetData======", masterSheetData);
+      if (masterSheetData) {
+        // update master sheet
+        const updateMasterSheet = await masterSheet.updateOne(
+          { sheetName: updateMasterSheet.sheetName },
+          {
+            $set: {
+              sheetName: fileName
+            }
+          })
+      }else{
+        // create master sheet
+        const saveMastarSheet = new masterSheet({
+          sheetName: fileName
+        })
+        await saveMastarSheet.save()
+      }
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS

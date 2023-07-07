@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken')
 const Multiparty = require("multiparty");
 const xlsx = require('xlsx');
 const XlsxPopulate = require('xlsx-populate');
+const masterData = require("../models/masterdata")
+const jobs = require("../models/jobDone")
 
 module.exports.encrypt = async (data) => {
   try {
@@ -177,4 +179,13 @@ module.exports.removeDuplicates = async (array, key) => {
   });
 }
 
-//This function is use for 
+//This function is use for clear master and job done database`
+module.exports.clearDataBase = async()=>{
+  try{
+    const deleteJobs = await jobs.deleteMany({})
+    const deleteMasterData = await masterData.deleteMany({})
+    return Promise.resolve('Done')
+  }catch(error){
+    return Promise.reject(error)
+  }
+}

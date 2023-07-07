@@ -1,5 +1,5 @@
-const { decrypt, encrypt } = require('../../utils/utill')
-const { statusCode, role, status, userStatus, jobStatus, outletStatus, coolerStatus } = require("../../utils/constant")
+const { decrypt, encrypt, downloadXlsxFile } = require('../../utils/utill')
+const { statusCode, role, status, userStatus, jobStatus, outletStatus, coolerStatus, sheetStatus } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const masterData = require("../../models/masterdata")
@@ -7,6 +7,9 @@ const moment = require("moment")
 const userResponse = require("../../response/userResponse")
 const superAdminService = require("../superAdmin/superAdminService")
 const jobs = require("../../models/jobDone")
+const { deleteImagesFolderFromS3, deletImageFromS3 } = require("../../utils/uploadFiles")
+const masterSheet = require("../../models/masterSheet")
+
 
 module.exports.getAllAdminAllotedList = async (req, res) => {
   try {
@@ -338,7 +341,25 @@ module.exports.jobDone = async (req, res) => {
               case coolerStatus.FOUND:
                 const coolerDetails = await masterData.findOne({ equipmentSrNo: valueOfCooler.equipmentSrNo, manufectureSrNo: valueOfCooler.manufectureSrNo }).lean()
                 if (coolerDetails) {
-
+                  if (jobsData && jobsData.length > 0) {
+                    const updateJob = await jobs.updateOne(
+                      { customerId: customerId },
+                      {
+                        $set: {
+                          coolerList: req.body.coolerList,
+                          jobStatus: jobStatus.DONE
+                        }
+                      })
+                    break
+                  } else {
+                    const saveJob = new jobs({
+                      coolerList: req.body.coolerList,
+                      jobStatus: jobStatus.DONE,
+                      customerId: customerId,
+                    })
+                    const save = saveJob.save()
+                    break
+                  }
                 } else {
                   if (jobsData && jobsData.length > 0) {
                     const updateJob = await jobs.updateOne(
@@ -359,7 +380,7 @@ module.exports.jobDone = async (req, res) => {
                     const save = saveJob.save()
                     break
                   }
-                  
+
                   // status = message.Details_not_matched
                   break;
                 }
@@ -391,6 +412,61 @@ module.exports.jobDone = async (req, res) => {
 
   } catch (error) {
     console.log("error in jobDone function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+module.exports.uploadImages = async (req, res) => {
+  try {
+    if (req.file && req.file.location) {
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        fileName: req.file.location
+      })
+    } else {
+      return res.send({
+        status: statusCode.error,
+        message: message.File_not_upload
+      })
+    }
+  } catch (error) {
+    console.log("error in uploadImages function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+module.exports.deleteImagesFolder = async (req, res) => {
+  try {
+    const deleteFolder = await deleteImagesFolderFromS3()
+    return res.send({
+      status: statusCode.success,
+      message: deleteFolder,
+    })
+  } catch (error) {
+    console.log("error in deleteImagesFolder function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+module.exports.deleteImages = async(req, res)=>{
+  try{
+    const deleteImage = await deletImageFromS3(req.body.imageName)
+    return res.send({
+      status: statusCode.success,
+      message: deleteImage,
+    })
+  }catch(error){
+    console.log("error in deleteImagesFromS3 function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

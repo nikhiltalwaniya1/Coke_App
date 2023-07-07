@@ -1,5 +1,5 @@
 const logger = require("../../utils/logger")
-const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates } = require("../../utils/utill")
+const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates, clearDataBase } = require("../../utils/utill")
 const { statusCode, role, status } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
@@ -8,7 +8,9 @@ const userResponse = require("../../response/userResponse")
 const masterData = require("../../models/masterdata")
 const { sendSMS } = require("../../utils/sendotp")
 const { sendMail } = require("../../utils/sendEmail")
-
+const { createS3Folder } = require("../../utils/uploadFiles")
+const masterSheet = require("../../models/masterSheet")
+const jobs = require("../../models/jobDone")
 exports.createAdmin = async (req, res) => {
   try {
     const userValidation = await superAdminService.checkDetails(req.body)
@@ -91,7 +93,7 @@ exports.alluserlistforsuperadmin = async (req, res) => {
     let page = req.query?.limit ? req.query.limit : 1;
     let pageNo = page ? (page - 1) * perPage : 0;
     const count = await users.find({}).count()
-    const userData = await users.find({role:{$ne:role.SUPER_ADMIN}}).limit(perPage).skip(pageNo).lean()
+    const userData = await users.find({ role: { $ne: role.SUPER_ADMIN } }).limit(perPage).skip(pageNo).lean()
     if (userData && userData.length > 0) {
       const promise = userData.map(async (value) => {
         value.id = await encrypt(value._id)
@@ -123,12 +125,36 @@ exports.alluserlistforsuperadmin = async (req, res) => {
 exports.importfile = async (req, res) => {
   try {
     const multipartyDataNew = await multipartyData(req)
-    const sheetData = await uploadXlsx(multipartyDataNew)
-    await masterData.insertMany(sheetData)
-    return res.send({
-      status: statusCode.success,
-      message: message.SUCCESS
-    })
+    if (multipartyDataNew.file && multipartyDataNew.file.length > 0) {
+      const originalFilename = multipartyDataNew.file[0].originalFilename
+      const updatedFileName = originalFilename.split('.xlsx').join("")
+      const fileName = updatedFileName + "_" + Date.now()
+      // Clear the database
+      const clearDB = await clearDataBase()
+      // Get data in array
+      const sheetData = await uploadXlsx(multipartyDataNew)
+      // Insert data in database
+      await masterData.insertMany(sheetData)
+      // Create folder in S3
+      const createFolder = await createS3Folder(fileName)
+      // Get data from master sheet 
+      const masterSheetData = await masterSheet.find({sheetStatus:sheetStatus.NOT_DONE}).lean()
+      // update master sheet
+      const updateMasterSheet = await masterSheet.updateOne(
+        {sheetName:updateMasterSheet.sheetName},
+        {$set:{
+          sheetName:fileName
+        }})
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS
+      })
+    } else {
+      return res.send({
+        status: statusCode.error,
+        message: message.SOMETHING_WENT_WRONG
+      })
+    }
   } catch (error) {
     console.log("error in importfile function ========" + error)
     return res.send({
@@ -140,9 +166,8 @@ exports.importfile = async (req, res) => {
 
 exports.downloadFile = async (req, res) => {
   try {
-    const masterSheetData = await masterData.find({}).lean()
-    console.log("masterSheetData", masterSheetData)
-    const reponse = await downloadXlsxFile(masterSheetData)
+    const jobsData = await jobs.find({}).lean()
+    const reponse = await downloadXlsxFile(jobsData)
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=example.xlsx');
     return res.send(reponse)
@@ -313,7 +338,7 @@ exports.getAllOutlet = async (req, res) => {
     const city = req.body.city
     const area = req.body.area
 
-    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1,customerId:0, nameofcustomer: 1 }).lean()
+    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, customerId: 0, nameofcustomer: 1 }).lean()
     if (allStateData && allStateData.length > 0) {
       // let arrayOfOutlet = []
       const promise = allStateData.map(async (valueOfOutlet) => {
@@ -347,15 +372,15 @@ exports.getOutletDetails = async (req, res) => {
   try {
     // const userId = await decrypt(req.query.id)
     const userId = req.query.id
-    const outletData = await masterData.find({ customerId: userId }).lean()    
+    const outletData = await masterData.find({ customerId: userId }).lean()
     if (outletData) {
       let equipmentSrNoArray = []
       let customerId = ''
-      const promise = outletData.map(async(valueOfMasterData)=>{
+      const promise = outletData.map(async (valueOfMasterData) => {
         customerId = await encrypt(valueOfMasterData.customerId)
         let equipmentObj = {
-          equipmentSrNo:valueOfMasterData.equipmentSrNo,
-          manufectureSrNo:valueOfMasterData.manufectureSrNo
+          equipmentSrNo: valueOfMasterData.equipmentSrNo,
+          manufectureSrNo: valueOfMasterData.manufectureSrNo
         }
         equipmentSrNoArray.push(equipmentObj)
         return

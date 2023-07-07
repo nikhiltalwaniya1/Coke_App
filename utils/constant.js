@@ -39,6 +39,11 @@ const coolerStatus = {
   NOT_FOUND:"Not Found"
 }
 
+const sheetStatus = {
+  DONE:"Done",
+  NOT_DONE:"Not Done"
+}
+
 module.exports = {
   statusCode,
   role,
@@ -47,6 +52,7 @@ module.exports = {
   userStatus,
   jobStatus,
   outletStatus,
-  coolerStatus
+  coolerStatus,
+  sheetStatus
 }
 

@@ -1,6 +1,6 @@
 const logger = require("../../utils/logger")
 const { encrypt, decrypt, encryptPassword, multipartyData, uploadXlsx, downloadXlsxFile, generateRandomPassword, generateOtp, removeDuplicates, clearDataBase } = require("../../utils/utill")
-const { statusCode, role, status, sheetStatus } = require("../../utils/constant")
+const { statusCode, role, status, sheetStatus, userStatus, jobStatus } = require("../../utils/constant")
 const { message } = require("../../utils/message")
 const users = require("../../models/users")
 const superAdminService = require("./superAdminService")
@@ -137,19 +137,27 @@ exports.importfile = async (req, res) => {
       await masterData.insertMany(sheetData)
       // Create folder in S3
       const createFolder = await createS3Folder(fileName)
+      // remove allotment
+      const updateUser = await users.updateMany(
+        {
+          workingState:null,
+          workingCity:null,
+          workingArea:null
+        }
+      )
       // Get data from master sheet 
       const masterSheetData = await masterSheet.findOne({ sheetStatus: sheetStatus.NOT_DONE }).lean()
       console.log("masterSheetData======", masterSheetData);
       if (masterSheetData) {
         // update master sheet
         const updateMasterSheet = await masterSheet.updateOne(
-          { sheetName: updateMasterSheet.sheetName },
+          { sheetName: masterSheetData.sheetName },
           {
             $set: {
               sheetName: fileName
             }
           })
-      }else{
+      } else {
         // create master sheet
         const saveMastarSheet = new masterSheet({
           sheetName: fileName
@@ -484,6 +492,49 @@ exports.getAllottedStateCityList = async (req, res) => {
     console.log("req body", req.body)
   } catch (error) {
     console.log("error in getAllottedStateCityList function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+exports.getalljobdonelist = async (req, res) => {
+  try {
+    const userId = await decrypt(req.body._id)
+    let query
+    switch (req.body.role) {
+      case role.SUPER_ADMIN:
+        query = { jobStatus: jobStatus.DONE }
+        break;
+      case role.ADMIN:
+        query = { userId: userId, jobStatus: jobStatus.DONE }
+        break;
+      case role.SUB_USER:
+        const userDetails = await users.findOne({_id:userId}, {createdBy:1}).lean()
+        query = { userId: userDetails.createdBy, jobStatus: jobStatus.DONE }
+        break;
+      default:
+        break;
+    }
+    // const jobsDoneData = await jobs.find(query).populate("customerId").lean()
+    const jobsDoneData = await jobs.find(query).lean()
+    if(jobsDoneData && jobsDoneData.length>0){
+      return res.send({
+        status: statusCode.success,
+        message: message.SUCCESS,
+        data: jobsDoneData
+      })
+    }else{
+      return res.send({
+        status: statusCode.error,
+        message: message.Data_not_found,
+        data: jobsDoneData
+      })
+    }
+    console.log("jobsDoneData=====", jobsDoneData)
+  } catch (error) {
+    console.log("error in getalljobdonelist function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

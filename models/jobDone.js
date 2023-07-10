@@ -6,7 +6,8 @@ const jobsSchema = new Schema(
   {
     customerId: {
       type: String,
-      default: ''
+      default: '',
+      ref: "masterdata",
     },
     coolerList: [
       {

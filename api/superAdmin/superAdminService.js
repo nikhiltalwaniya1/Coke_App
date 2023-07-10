@@ -38,13 +38,6 @@ module.exports.userDetails = async (email) => {
 module.exports.allotteeWork = async (state, city, area, adminName, subUserName, id) => {
   try{
     if((state && state.length>0)&& (city && city.length>0)&&(area && area.length>0)){
-      console.log("state=====", state);
-      console.log("city=====", city);
-      console.log("area=====", area);
-      console.log("adminName=====", adminName);
-      console.log("subUserName=====", subUserName);
-      console.log("id=====", id);
-
       const promise = state.map(async (valueOfState) => {
         const promise1 = city.map(async (valueOfCity) => {
           const promise2 = area.map(async (valueOfarea) => {

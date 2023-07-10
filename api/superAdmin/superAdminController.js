@@ -349,7 +349,7 @@ exports.getAllOutlet = async (req, res) => {
     const city = req.body.city
     const area = req.body.area
 
-    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, customerId: 0, nameofcustomer: 1 }).lean()
+    const allStateData = await masterData.find({ state: state, city: city, area: area }, { _id: 1, customerId: 1, nameofcustomer: 1 }).lean()
     if (allStateData && allStateData.length > 0) {
       // let arrayOfOutlet = []
       const promise = allStateData.map(async (valueOfOutlet) => {

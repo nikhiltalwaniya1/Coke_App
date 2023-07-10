@@ -43,6 +43,10 @@ const jobsSchema = new Schema(
     outletImages:{
       type: Array,
       default: []
+    },
+    userId:{
+      type: String,
+      default: ''
     }
   },
   {

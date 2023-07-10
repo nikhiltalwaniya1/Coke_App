@@ -310,6 +310,7 @@ module.exports.jobDone = async (req, res) => {
             {
               $set: {
                 outletImages: req.body.outletImages,
+                userId:req.body.userId,
                 jobStatus: jobStatus.NOT_DONE
               }
             })
@@ -319,6 +320,7 @@ module.exports.jobDone = async (req, res) => {
             outletImages: req.body.outletImages,
             jobStatus: jobStatus.NOT_DONE,
             customerId: customerId,
+            userId:req.body.userId,
             coolerList: []
           })
           const save = saveJob.save()
@@ -347,6 +349,7 @@ module.exports.jobDone = async (req, res) => {
                       {
                         $set: {
                           coolerList: req.body.coolerList,
+                          userId:req.body.userId,
                           jobStatus: jobStatus.DONE
                         }
                       })
@@ -356,6 +359,7 @@ module.exports.jobDone = async (req, res) => {
                       coolerList: req.body.coolerList,
                       jobStatus: jobStatus.DONE,
                       customerId: customerId,
+                      userId:req.body.userId,
                     })
                     const save = saveJob.save()
                     break
@@ -367,7 +371,8 @@ module.exports.jobDone = async (req, res) => {
                       {
                         $set: {
                           coolerList: req.body.coolerList,
-                          jobStatus: jobStatus.DONE
+                          jobStatus: jobStatus.DONE,
+                          userId:req.body.userId,
                         }
                       })
                     break
@@ -375,6 +380,7 @@ module.exports.jobDone = async (req, res) => {
                     const saveJob = new jobs({
                       coolerList: req.body.coolerList,
                       jobStatus: jobStatus.DONE,
+                      userId:req.body.userId,
                       customerId: customerId,
                     })
                     const save = saveJob.save()

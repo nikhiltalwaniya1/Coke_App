@@ -381,9 +381,10 @@ exports.getAllOutlet = async (req, res) => {
 
 exports.getOutletDetails = async (req, res) => {
   try {
-    // const userId = await decrypt(req.query.id)
-    const userId = req.query.id
+    const userId = await decrypt(req.query.id)
+    // const userId = req.query.id
     const outletData = await masterData.find({ customerId: userId }).lean()
+    console.log("outletData", outletData)
     if (outletData) {
       let equipmentSrNoArray = []
       let customerId = ''

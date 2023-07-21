@@ -13,13 +13,11 @@ module.exports.dailySendMail = async () => {
         const after7DaysTime = moment(value.created_at).add(7, 'days').format()
         if (currentTime == after7DaysTime) {
           console.log("currentTime", currentTime)
-          
+          return Promise.resolve(null)
         }else{
           console.log("after7DaysTime", after7DaysTime)
           return Promise.resolve(null)
-
         }
-
       })
       await Promise.all(promise)
 

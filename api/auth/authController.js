@@ -10,7 +10,6 @@ const users = require("../../models/users")
 
 module.exports.login = async (req, res) => {
   try {
-    console.log("working");
     const checkDetails = await authService.checkDetails(req.body)
     if (checkDetails != null) {
       return res.send({

@@ -1,14 +1,14 @@
 const message = {
-  Data_not_found:"Data not found...",
-  Email_already_exist:"Given email is already exist...",
-  Registration_Done:"Registration successfully done...",
-  Email_not_exist:"This email is not exist...",
+  Data_not_found:"No Records Found...",
+  Email_already_exist:"Email Id Already Exists...",
+  Registration_Done:"Registration Done Successfully...",
+  Email_not_exist:"Email Id does not exist...",
   Password_not_match:"Invaild Password",
   SUCCESS:"Success",
   SOMETHING_WENT_WRONG:"Something went wrong",
-  Password_Sended:"Password successfully sended...",
-  Details_not_matched:"Details not metched",
-  File_not_upload:"File not upload"
+  Password_Sended:"Password Sent Successfully...",
+  Details_not_matched:"Details Mismatched",
+  File_not_upload:"File Not Uploaded"
 }
 
 module.exports = {

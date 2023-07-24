@@ -501,40 +501,40 @@ exports.getAllottedStateCityList = async (req, res) => {
 
 exports.getalljobdonelist = async (req, res) => {
   try {
+    let perPage = req.query?.perPage ? req.query.perPage : 25;
+    let page = req.query?.limit ? req.query.limit : 1;
+    let pageNo = page ? (page - 1) * perPage : 0;
     const userId = await decrypt(req.body._id)
     let query
-    switch (req.body.role) {
-      case role.SUPER_ADMIN:
-        query = { jobStatus: jobStatus.DONE }
-        break;
-      case role.ADMIN:
-        query = { userId: userId, jobStatus: jobStatus.DONE }
-        break;
-      case role.SUB_USER:
-        const userDetails = await users.findOne({_id:userId}, {createdBy:1}).lean()
-        query = { userId: userDetails.createdBy, jobStatus: jobStatus.DONE }
-        break;
-      default:
-        break;
+    if(req.body.role == role.SUPER_ADMIN){
+      query = { jobStatus: jobStatus.DONE }
+    }else if(req.body.role == role.ADMIN){
+      query = { userId: userId, jobStatus: jobStatus.DONE }
+    }else if(req.body.role == role.SUB_USER){
+      const userDetails = await users.findOne({_id:userId}, {createdBy:1}).lean()
+      query = { userId: userDetails.createdBy, jobStatus: jobStatus.DONE }
     }
     // const jobsDoneData = await jobs.find(query).populate("customerId").lean()
-    const jobsDoneData = await jobs.find(query).lean()
+    // const count = await jobs.find(query).count()
+    const jobsDoneData = await jobs.find(query).limit(perPage).skip(pageNo).sort({createdAt:-1}).lean()
+    const count = await jobs.find(query).countDocuments()
     if(jobsDoneData && jobsDoneData.length>0){
       return res.send({
         status: statusCode.success,
         message: message.SUCCESS,
-        data: jobsDoneData
+        data: jobsDoneData,
+        count:count
       })
     }else{
       return res.send({
         status: statusCode.error,
         message: message.Data_not_found,
-        data: jobsDoneData
+        data: jobsDoneData,
+        count:count
       })
     }
-    console.log("jobsDoneData=====", jobsDoneData)
   } catch (error) {
-    console.log("error in getalljobdonelist function ========" + error)
+    console.log("error in getalljobdonelist function ========" , error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG

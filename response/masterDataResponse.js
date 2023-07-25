@@ -4,6 +4,7 @@ module.exports = class {
     this.customerId = instance.customerId ? instance.customerId : ''
     this.nameofcustomer = instance.nameofcustomer ? instance.nameofcustomer : ''
     this.address = instance.address ? instance.address : ''
+    this.contactNo = instance.contactNo ? instance.contactNo : ''
     this.state = instance.state ? instance.state : ''
     this.city = instance.city ? instance.city : ''
     this.area = instance.area ? instance.area : ''

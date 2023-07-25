@@ -85,7 +85,6 @@ module.exports.generateOtp = (length) => {
 
 module.exports.uploadXlsx = (data) => {
   try {
-    console.log("data.....", data.file[0].path)
     const workbook = xlsx.readFile(data.file[0].path);
     const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
@@ -112,40 +111,37 @@ module.exports.multipartyData = async (req) => {
 
 module.exports.downloadXlsxFile = async (data) => {
   try {
-    console.log("data====", data)
-    // const workbook = await XlsxPopulate.fromBlankAsync();
-    // const sheet = workbook.sheet("Sheet1");
+    const workbook = await XlsxPopulate.fromBlankAsync();
+    const sheet = workbook.sheet("Sheet1");
     // Set cell values
-    // sheet.cell('A1').value('customerId');
-    // sheet.cell('B1').value('nameofcustomer');
-    // sheet.cell('C1').value('address');
-    // sheet.cell('D1').value('state');
-    // sheet.cell('E1').value('city');
-    // sheet.cell('F1').value('area');
-    // sheet.cell('G1').value('coolerModel');
-    // sheet.cell('H1').value('coolerType');
-    // sheet.cell('I1').value('manufecture');
-    // sheet.cell('J1').value('equipmentSrNo');
-    // sheet.cell('K1').value('manufectureSrNo');
+    sheet.cell('A1').value('customerId');
+    sheet.cell('B1').value('manufectureSrNo');
+    sheet.cell('C1').value('equipmentSrNo');
+    sheet.cell('D1').value('state');
+    sheet.cell('E1').value('city');
+    sheet.cell('F1').value('area');
+    sheet.cell('G1').value('address');
+    sheet.cell('H1').value('remark');
+    sheet.cell('I1').value('outLetStatus');
+    sheet.cell('J1').value('coolerStatus');
 
-    // if (data && data.length > 0) {
-    //   data.forEach((val, i) => {
-    //     const row = i + 2;
-    //     sheet.cell(`A${row}`).value(val.customerId);
-    //     sheet.cell(`B${row}`).value(val.nameofcustomer);
-    //     sheet.cell(`C${row}`).value(val.address);
-    //     sheet.cell(`D${row}`).value(val.state);
-    //     sheet.cell(`E${row}`).value(val.city);
-    //     sheet.cell(`F${row}`).value(val.area);
-    //     sheet.cell(`G${row}`).value(val.coolerModel);
-    //     sheet.cell(`H${row}`).value(val.coolerType);
-    //     sheet.cell(`I${row}`).value(val.manufecture);
-    //     sheet.cell(`J${row}`).value(val.equipmentSrNo);
-    //     sheet.cell(`K${row}`).value(val.manufectureSrNo);
-    //   });
-    // }
-    // const fileData = await workbook.outputAsync();
-    // return fileData;
+    if (data && data.length > 0) {
+      data.forEach((val, i) => {
+        const row = i + 2;
+        sheet.cell(`A${row}`).value(val.customerId);
+        sheet.cell(`B${row}`).value(val.manufecture);
+        sheet.cell(`C${row}`).value(val.equipmentSrNo);
+        sheet.cell(`D${row}`).value(val.state);
+        sheet.cell(`E${row}`).value(val.city);
+        sheet.cell(`F${row}`).value(val.area);
+        sheet.cell(`G${row}`).value(val.address);
+        sheet.cell(`H${row}`).value(val.remark);
+        sheet.cell(`I${row}`).value(val.outLetStatus);
+        sheet.cell(`J${row}`).value(val.coolerStatus);
+      });
+    }
+    const fileData = await workbook.outputAsync();
+    return fileData;
   } catch (error) {
     console.log("error in downloadxlsxfile function line 118  ", error)
     return Promise.reject(error)

@@ -79,6 +79,10 @@ const masterdata = new Schema(
     jobStatus:{
       type: String,
       default:'Not Done'
+    },
+    contactNo:{
+      type: String,
+      default:''
     }
   },
   {

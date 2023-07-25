@@ -9,33 +9,29 @@ const jobsSchema = new Schema(
       default: '',
       ref: "masterdata",
     },
-    coolerList: [
-      {
-        manufectureSrNo:{
-          type: String,
-          default: ''
-        },
-        equipmentSrNo:{
-          type: String,
-          default: ''
-        },
-        coolerStatus:{
-          type: String,
-          default: ''
-        },
-        remark:{
-          type: String,
-          default: ''
-        },
-        coolerImages:{
-          type: Array,
-          default: []
-        },
-      }
-    ],
     jobId:{
       type: String,
       default: ''
+    },
+    manufectureSrNo:{
+      type: String,
+      default: ''
+    },
+    equipmentSrNo:{
+      type: String,
+      default: ''
+    },
+    coolerStatus:{
+      type: String,
+      default: ''
+    },
+    remark:{
+      type: String,
+      default: ''
+    },
+    coolerImages:{
+      type: Array,
+      default: []
     },
     jobStatus:{
       type: String,
@@ -47,8 +43,33 @@ const jobsSchema = new Schema(
     },
     userId:{
       type: String,
+      default: '',
+      ref: "users",
+    },
+    geoLocation: {
+      type: Object,
+      default: {},
+    },
+    outLetStatus:{
+      type: String,
       default: ''
-    }
+    },
+    address: {
+      type: String,
+      default: ''
+    },
+    state: {
+      type: String,
+      default: ''
+    },
+    city: {
+      type: String,
+      default: ''
+    },
+    area: {
+      type: String,
+      default: ''
+    },
   },
   {
     timestamps: true,

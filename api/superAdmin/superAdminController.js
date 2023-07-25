@@ -22,8 +22,16 @@ exports.createAdmin = async (req, res) => {
     }
     const userData = await superAdminService.userDetails(req.body.email)
     let createdby = ''
-    if ((req.body.role == role.ADMIN) || (req.body.role == role.SUB_USER)) {
+    let userId = ''
+    if(req.body.role == role.ADMIN){
       createdby = await decrypt(req.body.createdBy)
+      userId = req.body.email
+    }else if(req.body.role == role.SUB_USER){
+      createdby = await decrypt(req.body.createdBy)
+      userId = req.body.phoneNumber
+    }else if(req.body.role == role.SUPER_ADMIN){
+      createdby = ''
+      userId = req.body.email
     }
     if (userData == null) {
       const saveUser = new users({
@@ -36,7 +44,8 @@ exports.createAdmin = async (req, res) => {
         workingArea: req.body.workingArea,
         phoneNumber: req.body.phoneNumber,
         panNumber: req.body.panNumber,
-        createdBy: createdby
+        createdBy: createdby,
+        userId:userId
       })
       const saveUserDetails = await saveUser.save()
       if ((req.body.role == role.ADMIN) || (req.body.role == role.SUPER_ADMIN)) {
@@ -186,10 +195,31 @@ exports.importfile = async (req, res) => {
 exports.downloadFile = async (req, res) => {
   try {
     const jobsData = await jobs.find({}).lean()
-    const reponse = await downloadXlsxFile(jobsData)
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=example.xlsx');
-    return res.send(reponse)
+    if(jobsData && jobsData.length>0){
+      const promise = jobsData.map((valueOfJobs)=>{
+        let obj = {}
+        obj.customerId = valueOfJobs.customerId
+        obj.address = valueOfJobs.address
+        obj.nameofcustomer = valueOfJobs.nameofcustomer
+        obj.state = valueOfJobs.state
+        obj.city = valueOfJobs.city
+        obj.area = valueOfJobs.area
+        obj.coolerType = valueOfJobs.coolerType
+        obj.manufecture = valueOfJobs.manufecture
+        obj.equipmentSrNo = valueOfJobs.equipmentSrNo
+        obj.manufectureSrNo = valueOfJobs.manufectureSrNo
+     
+      })
+      // const reponse = await downloadXlsxFile(jobsData)
+      // res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      // res.setHeader('Content-Disposition', 'attachment; filename=example.xlsx');
+      // return res.send(reponse)
+    }else{
+      return res.send({
+        status: statusCode.error,
+        message: message.Data_not_found
+      })
+    }
   } catch (error) {
     console.log("error in downloadFile function ========" + error)
     return res.send({

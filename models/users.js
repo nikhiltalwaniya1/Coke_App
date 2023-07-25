@@ -46,6 +46,10 @@ const user = new Schema(
       type: String,
       default: 0
     },
+    userId:{
+      type: String,
+      default: ''
+    },
     createdBy: {
       type: String
     }

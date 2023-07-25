@@ -23,7 +23,7 @@ module.exports.checkDetails = async (data, cb) => {
 
 module.exports.userDetails = async (email) => {
   try {
-    const userData = await users.findOne({ email: email }).lean()
+    const userData = await users.findOne({ userId: email }).lean()
     if (userData) {
       return Promise.resolve(userData)
     } else {

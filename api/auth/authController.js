@@ -22,7 +22,7 @@ module.exports.login = async (req, res) => {
     if (isEmailVaild) {
       const checkVaildations = await authService.checkEmailisValid(req.body.email)
       if (checkVaildations) {
-        query = { email: req.body.email }
+        query = { userId: req.body.email }
       } else {
         return res.send({
           status: statusCode.error,
@@ -30,7 +30,7 @@ module.exports.login = async (req, res) => {
         })
       }
     } else {
-      query = { phoneNumber: req.body.email }
+      query = { userId: req.body.email }
     }
     const userData = await users.findOne(query).lean()
     if (userData) {

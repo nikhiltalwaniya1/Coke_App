@@ -290,6 +290,225 @@ module.exports.blockUser = async (req, res) => {
 module.exports.jobDone = async (req, res) => {
   try {
     const customerId = await decrypt(req.body.customerId)
+    const jobId = await decrypt(req.body.jobId)
+    const jobsData = await jobs.find({ jobId: jobId }).lean()
+    switch (req.body.outletStatus) {
+      case outletStatus.NOT_FOUND:
+        if (jobsData && jobsData.length > 0) {
+          const updateOutletStatus = await jobs.updateOne(
+            { jobId: jobId },
+            {
+              $set: {
+                outLetStatus: req.body.outletStatus,
+                userId: req.body.userId,
+                geoLocation: req.body.geoLocation,
+                jobStatus: jobStatus.NOT_DONE
+              }
+            }
+          )
+          return res.send({
+            status: statusCode.success,
+            message: message.SUCCESS,
+          })
+        } else {
+          const updateOutLetStatus = new jobs({
+            customerId: customerId,
+            jobId: jobId,
+            outLetStatus: req.body.outletStatus,
+            userId: req.body.userId,
+            address: req.body.address,
+            state: req.body.state,
+            city: req.body.city,
+            area: req.body.area,
+            geoLocation: req.body.geoLocation,
+            jobStatus: jobStatus.NOT_DONE
+          })
+          await updateOutLetStatus.save()
+          return
+        }
+      case outletStatus.CLOSE:
+        if (jobsData && jobsData.length > 0) {
+          const updateJob = await jobs.updateOne(
+            { jobId: jobId },
+            {
+              $set: {
+                outletImages: req.body.outletImages,
+                userId: req.body.userId,
+                jobStatus: jobStatus.NOT_DONE
+              }
+            })
+          return
+        } else {
+          const saveJob = new jobs({
+            customerId: customerId,
+            jobId: jobId,
+            outLetStatus: req.body.outletStatus,
+            userId: req.body.userId,
+            address: req.body.address,
+            state: req.body.state,
+            city: req.body.city,
+            area: req.body.area,
+            geoLocation: req.body.geoLocation,
+            jobStatus: jobStatus.NOT_DONE,
+            outletImages: req.body.outletImages
+          })
+          const save = await saveJob.save()
+          return
+        }
+      case outletStatus.OPEN:
+        if (req.body.coolerList && req.body.coolerList.length > 0) {
+          const promise = req.body.coolerList.map(async (valueOfCoolerList) => {
+            if (valueOfCoolerList.coolerStatus == coolerStatus.NOT_FOUND) {
+              if (jobsData && jobsData.length > 0) {
+                const updateJobs = await jobs.updateOne(
+                  { jobId: jobId },
+                  {
+                    manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                    equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                    remark: valueOfCoolerList.remark,
+                    coolerImages: valueOfCoolerList.coolerImages,
+                    geoLocation: req.body.geoLocation,
+                    jobStatus: jobStatus.NOT_DONE,
+                    outletImages: req.body.outletImages,
+                    coolerStatus: valueOfCoolerList.coolerStatus,
+                    userId: req.body.userId,
+                  }
+                )
+                return
+              } else {
+                const saveJob = new jobs({
+                  customerId: customerId,
+                  jobId: jobId,
+                  outLetStatus: req.body.outletStatus,
+                  userId: req.body.userId,
+                  address: req.body.address,
+                  state: req.body.state,
+                  city: req.body.city,
+                  area: req.body.area,
+                  manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                  equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                  remark: valueOfCoolerList.remark,
+                  coolerImages: valueOfCoolerList.coolerImages,
+                  geoLocation: req.body.geoLocation,
+                  jobStatus: jobStatus.NOT_DONE,
+                  outletImages: req.body.outletImages,
+                  coolerStatus: valueOfCoolerList.coolerStatus
+                })
+                const save = await saveJob.save()
+                return
+              }
+            } else if (valueOfCoolerList.coolerStatus == coolerStatus.FOUND) {
+              const coolerDetails = await masterData.findOne({ equipmentSrNo: valueOfCoolerList.equipmentSrNo, manufectureSrNo: valueOfCoolerList.manufectureSrNo }).lean()
+              if (coolerDetails) {
+                if (jobsData && jobsData.length > 0) {
+                  const updateJob = await jobs.updateOne(
+                    { jobId: jobId },
+                    {
+                      $set: {
+                        manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                        equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                        remark: valueOfCoolerList.remark,
+                        coolerImages: valueOfCoolerList.coolerImages,
+                        geoLocation: req.body.geoLocation,
+                        jobStatus: jobStatus.DONE,
+                        outletImages: req.body.outletImages,
+                        coolerStatus: valueOfCoolerList.coolerStatus,
+                        userId: req.body.userId,
+                        outLetStatus: req.body.outletStatus,
+                      }
+                    })
+                    return
+                } else {
+                  const saveJob = new jobs({
+                    customerId: customerId,
+                    jobId: jobId,
+                    outLetStatus: req.body.outletStatus,
+                    userId: req.body.userId,
+                    address: req.body.address,
+                    state: req.body.state,
+                    city: req.body.city,
+                    area: req.body.area,
+                    manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                    equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                    remark: valueOfCoolerList.remark,
+                    coolerImages: valueOfCoolerList.coolerImages,
+                    geoLocation: req.body.geoLocation,
+                    jobStatus: jobStatus.DONE,
+                    outletImages: req.body.outletImages,
+                    coolerStatus: valueOfCoolerList.coolerStatus
+                  })
+                  const save = await saveJob.save()
+                  return
+                }
+              } else {
+                if (jobsData && jobsData.length > 0) {
+                  const updateJob = await jobs.updateOne(
+                    { jobId: jobId },
+                    {
+                      $set: {
+                        manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                        equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                        remark: valueOfCoolerList.remark,
+                        coolerImages: valueOfCoolerList.coolerImages,
+                        geoLocation: req.body.geoLocation,
+                        jobStatus: jobStatus.DONE,
+                        outletImages: req.body.outletImages,
+                        coolerStatus: valueOfCoolerList.coolerStatus,
+                        userId: req.body.userId,
+                        outLetStatus: req.body.outletStatus,
+                      }
+                    })
+                    return
+                } else {
+                  const saveJob = new jobs({
+                    customerId: customerId,
+                    jobId: jobId,
+                    outLetStatus: req.body.outletStatus,
+                    userId: req.body.userId,
+                    address: req.body.address,
+                    state: req.body.state,
+                    city: req.body.city,
+                    area: req.body.area,
+                    manufectureSrNo: valueOfCoolerList.manufectureSrNo,
+                    equipmentSrNo: valueOfCoolerList.equipmentSrNo,
+                    remark: valueOfCoolerList.remark,
+                    coolerImages: valueOfCoolerList.coolerImages,
+                    geoLocation: req.body.geoLocation,
+                    jobStatus: jobStatus.DONE,
+                    outletImages: req.body.outletImages,
+                    coolerStatus: valueOfCoolerList.coolerStatus
+                  })
+                  const save = await saveJob.save()
+                  return
+                }
+              }
+            }
+          })
+          await Promise.all(promise)
+          break
+        } else {
+          break;
+        }
+      default:
+        break;
+    }
+    return res.send({
+      status: statusCode.success,
+      message: message.SUCCESS
+    })
+  } catch (error) {
+    console.log("error in jobDone function ========" + error)
+    return res.send({
+      status: statusCode.error,
+      message: message.SOMETHING_WENT_WRONG
+    })
+  }
+}
+
+//This function is not in use
+module.exports.jobDone1 = async (req, res) => {
+  try {
+    const customerId = await decrypt(req.body.customerId)
     let status = ''
     const jobsData = await jobs.find({ customerId: customerId }).lean()
     switch (req.body.outletStatus) {
@@ -310,7 +529,7 @@ module.exports.jobDone = async (req, res) => {
             {
               $set: {
                 outletImages: req.body.outletImages,
-                userId:req.body.userId,
+                userId: req.body.userId,
                 jobStatus: jobStatus.NOT_DONE
               }
             })
@@ -320,7 +539,7 @@ module.exports.jobDone = async (req, res) => {
             outletImages: req.body.outletImages,
             jobStatus: jobStatus.NOT_DONE,
             customerId: customerId,
-            userId:req.body.userId,
+            userId: req.body.userId,
             coolerList: []
           })
           const save = saveJob.save()
@@ -349,7 +568,7 @@ module.exports.jobDone = async (req, res) => {
                       {
                         $set: {
                           coolerList: req.body.coolerList,
-                          userId:req.body.userId,
+                          userId: req.body.userId,
                           jobStatus: jobStatus.DONE
                         }
                       })
@@ -359,7 +578,7 @@ module.exports.jobDone = async (req, res) => {
                       coolerList: req.body.coolerList,
                       jobStatus: jobStatus.DONE,
                       customerId: customerId,
-                      userId:req.body.userId,
+                      userId: req.body.userId,
                     })
                     const save = saveJob.save()
                     break
@@ -372,7 +591,7 @@ module.exports.jobDone = async (req, res) => {
                         $set: {
                           coolerList: req.body.coolerList,
                           jobStatus: jobStatus.DONE,
-                          userId:req.body.userId,
+                          userId: req.body.userId,
                         }
                       })
                     break
@@ -380,7 +599,7 @@ module.exports.jobDone = async (req, res) => {
                     const saveJob = new jobs({
                       coolerList: req.body.coolerList,
                       jobStatus: jobStatus.DONE,
-                      userId:req.body.userId,
+                      userId: req.body.userId,
                       customerId: customerId,
                     })
                     const save = saveJob.save()
@@ -417,7 +636,7 @@ module.exports.jobDone = async (req, res) => {
     }
 
   } catch (error) {
-    console.log("error in jobDone function ========" + error)
+    console.log("error in jobDone1 function ========" + error)
     return res.send({
       status: statusCode.error,
       message: message.SOMETHING_WENT_WRONG
@@ -464,14 +683,14 @@ module.exports.deleteImagesFolder = async (req, res) => {
   }
 }
 
-module.exports.deleteImages = async(req, res)=>{
-  try{
+module.exports.deleteImages = async (req, res) => {
+  try {
     const deleteImage = await deletImageFromS3(req.body.imageName)
     return res.send({
       status: statusCode.success,
       message: deleteImage,
     })
-  }catch(error){
+  } catch (error) {
     console.log("error in deleteImagesFromS3 function ========" + error)
     return res.send({
       status: statusCode.error,

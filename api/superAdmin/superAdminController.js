@@ -53,7 +53,7 @@ exports.createAdmin = async (req, res) => {
         const encryptedPassword = await encryptPassword('12345678')
         const updatePassword = await users.updateOne({ _id: saveUserDetails._id }, { $set: { password: encryptedPassword } })
         if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null) && req.body.role == role.ADMIN) {
-          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id, req.body.role)
         }
         let obj = {
           email: req.body.email,
@@ -73,7 +73,7 @@ exports.createAdmin = async (req, res) => {
         const encryptedPassword = await encryptPassword('12345678')
         const updatePassword = await users.updateOne({ _id: saveUserDetails._id }, { $set: { password: encryptedPassword } })
         if ((req.body.workingState != null) && (req.body.workingArea != null) && (req.body.workingCity != null)) {
-          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id)
+          const updateMasterData = await superAdminService.allotteeWork(req.body.workingState, req.body.workingCity, req.body.workingArea, req.body.adminName, req.body.subUserName, saveUserDetails._id, req.body.role)
         }
         // const sendOtp = await sendSMS(obj)
         return res.send({
@@ -256,6 +256,7 @@ exports.getAllState = async (req, res) => {
       query = { allottedUserId: userId, status: status.ALLOTTED }
     }
     const allStateData = await masterData.find(query, { _id: 0, state: 1 }).lean()
+    console.log("allStateData====", allStateData)
     const finalArray = await removeDuplicates(allStateData, 'state')
     if (finalArray && finalArray.length > 0) {
       return res.send({

@@ -123,6 +123,7 @@ module.exports.updateUserDetails = async (req, res) => {
   try {
     const userId = await decrypt(req.body.createdBy)
     const reqObj = req.body
+    const userDetails = await users.findOne({ _id: userId }).lean()
     const updateUserDetails = await users.updateOne({ _id: userId }, {
       $set: {
         name: reqObj.name,
@@ -132,7 +133,7 @@ module.exports.updateUserDetails = async (req, res) => {
         phoneNumber: reqObj.phoneNumber
       }
     })
-    const updateMasterData = await superAdminService.allotteeWork(reqObj.workingState, reqObj.workingCity, reqObj.workingArea, reqObj.adminName, reqObj.subUserName, userId)
+    const updateMasterData = await superAdminService.allotteeWork(reqObj.workingState, reqObj.workingCity, reqObj.workingArea, reqObj.adminName, reqObj.subUserName, userId, userDetails.role)
     return res.send({
       status: statusCode.success,
       message: message.SUCCESS,
@@ -210,7 +211,7 @@ module.exports.transferAllotement = async (req, res) => {
     const transferToDetails = await users.findOne({ _id: userId }).lean()
     const mainDetails = await users.findOne({ _id: userId }).lean()
     const removeWork = await superAdminService.removeAllottement(allottedUserId)
-    const allotteWork = await superAdminService.allotteeWork(allottedUserDetails.workingState, allottedUserDetails.workingCity, allottedUserDetails.workingArea, mainDetails.name, transferToDetails.name, transferToId)
+    const allotteWork = await superAdminService.allotteeWork(allottedUserDetails.workingState, allottedUserDetails.workingCity, allottedUserDetails.workingArea, mainDetails.name, transferToDetails.name, transferToId, allottedUserDetails.role)
     const updateUserDetails = await users.updateOne(
       { _id: transferToId },
       {

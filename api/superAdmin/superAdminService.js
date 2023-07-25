@@ -1,7 +1,7 @@
 const logger = require("../../utils/logger")
 const users = require("../../models/users")
 const masterData = require("../../models/masterdata")
-const { status } = require("../../utils/constant")
+const { status, role } = require("../../utils/constant")
 
 module.exports.checkDetails = async (data, cb) => {
   try {
@@ -35,24 +35,33 @@ module.exports.userDetails = async (email) => {
   }
 }
 
-module.exports.allotteeWork = async (state, city, area, adminName, subUserName, id) => {
-  try{
-    if((state && state.length>0)&& (city && city.length>0)&&(area && area.length>0)){
+module.exports.allotteeWork = async (state, city, area, adminName, subUserName, id, roleId) => {
+  try {
+    if ((state && state.length > 0) && (city && city.length > 0) && (area && area.length > 0)) {
       const promise = state.map(async (valueOfState) => {
         const promise1 = city.map(async (valueOfCity) => {
           const promise2 = area.map(async (valueOfarea) => {
+            let query = {}
+            if (roleId == role.ADMIN) {
+              query = {
+                allottedUserId: id,
+                adminName: adminName ? adminName : '',
+                status: status.ALLOTTED
+              }
+            } else if (roleId == role.SUB_USER) {
+              query = {
+                allottedUserId: id,
+                subUserName: subUserName ? subUserName : '',
+                status: status.ALLOTTED
+              }
+            }
             const updateMasterData = await masterData.updateOne({
               state: valueOfState,
               city: valueOfCity,
               area: valueOfarea
             },
               {
-                $set: {
-                  allottedUserId: id,
-                  adminName: adminName ? adminName : '',
-                  subUserName: subUserName ? subUserName : '',
-                  status: status.ALLOTTED
-                }
+                $set: query
               })
             return
           })
@@ -61,37 +70,41 @@ module.exports.allotteeWork = async (state, city, area, adminName, subUserName, 
         await Promise.all(promise1)
       })
       await Promise.all(promise)
-      return 
-    }else{
       return
-    }    
-  }catch(error){
+    } else {
+      return
+    }
+  } catch (error) {
     console.log("error== in allotteeWork====", error);
     return Promise.reject(error)
   }
 }
 
-module.exports.removeAllottement = async(userId)=>{
-  try{
+module.exports.removeAllottement = async (userId) => {
+  try {
     const clearWork = await masterData.updateMany(
-      {allottedUserId:userId},
-      {$set:{
-        allottedUserId:null,
-        adminName:null,
-        subUserName:null,
-        status:status.NOT_ALLOTTED
-      }}
+      { allottedUserId: userId },
+      {
+        $set: {
+          allottedUserId: null,
+          adminName: null,
+          subUserName: null,
+          status: status.NOT_ALLOTTED
+        }
+      }
     )
     const updateUser = await users.updateMany(
-      {_id:userId},
-      {$set:{
-        workingState:null,
-        workingCity:null,
-        workingArea:null
-      }}
+      { _id: userId },
+      {
+        $set: {
+          workingState: null,
+          workingCity: null,
+          workingArea: null
+        }
+      }
     )
     return Promise.resolve("Remove Allotment")
-  }catch(error){
+  } catch (error) {
     console.log("error== in clearWork====", error);
     return Promise.reject(error)
   }

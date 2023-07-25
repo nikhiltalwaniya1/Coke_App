@@ -292,7 +292,7 @@ exports.getAllCity = async (req, res) => {
         if (req.body.role == role.SUPER_ADMIN) {
           query = { state: valueOfState, status: status.NOT_ALLOTTED }
         } else {
-          query = { allottedUserId: userId, status: valueOfState, status: status.ALLOTTED }
+          query = { allottedUserId: userId, state: valueOfState, status: status.ALLOTTED }
         }
         const allCityData = await masterData.find(query, { _id: 0, city: 1 }).lean()
         arrayOfCity.push(...allCityData)

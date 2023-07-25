@@ -238,16 +238,28 @@ module.exports.transferAllotement = async (req, res) => {
 module.exports.blockUser = async (req, res) => {
   try {
     const userId = await decrypt(req.query.id)
+    const userdetails = await users.findOne({ _id: userId })
+    console.log("userdetails====", userdetails)
     if (req.query.status == userStatus.ACTIVE) {
+      let query = {}
+      if (userdetails.role == role.ADMIN) {
+        query = {
+          allottedUserId: userdetails.createdBy,
+          adminName: null,
+          subUserName: null,
+          status: status.ALLOTTED,
+        }
+      } else if (userdetails.role == role.SUB_USER) {
+        query = {
+          allottedUserId: userdetails.createdBy,
+          subUserName: null,
+          status: status.ALLOTTED,
+        }
+      }
       const updateMasterData = await masterData.updateMany(
         { allottedUserId: userId, jobStatus: jobStatus.NOT_DONE },
         {
-          $set: {
-            allottedUserId: null,
-            adminName: null,
-            subUserName: null,
-            status: status.NOT_ALLOTTED,
-          }
+          $set: query
         })
       const updateUser = await users.updateOne(
         { _id: userId },
@@ -418,7 +430,7 @@ module.exports.jobDone = async (req, res) => {
                         outLetStatus: req.body.outletStatus,
                       }
                     })
-                    return
+                  return
                 } else {
                   const saveJob = new jobs({
                     customerId: customerId,
@@ -459,7 +471,7 @@ module.exports.jobDone = async (req, res) => {
                         outLetStatus: req.body.outletStatus,
                       }
                     })
-                    return
+                  return
                 } else {
                   const saveJob = new jobs({
                     customerId: customerId,

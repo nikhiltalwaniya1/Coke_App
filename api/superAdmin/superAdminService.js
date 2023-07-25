@@ -55,6 +55,7 @@ module.exports.allotteeWork = async (state, city, area, adminName, subUserName, 
                 status: status.ALLOTTED
               }
             }
+            console.log("query====", query)
             const updateMasterData = await masterData.updateOne({
               state: valueOfState,
               city: valueOfCity,

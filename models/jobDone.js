@@ -7,11 +7,11 @@ const jobsSchema = new Schema(
     customerId: {
       type: String,
       default: '',
-      ref: "masterdata",
     },
     jobId:{
       type: String,
-      default: ''
+      default: '',
+      ref: "masterdata",
     },
     manufectureSrNo:{
       type: String,

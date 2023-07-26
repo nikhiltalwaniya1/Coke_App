@@ -533,7 +533,7 @@ exports.getalljobdonelist = async (req, res) => {
     }
     // const jobsDoneData = await jobs.find(query).populate("customerId").lean()
     // const count = await jobs.find(query).count()
-    const jobsDoneData = await jobs.find(query).limit(perPage).skip(pageNo).sort({createdAt:-1}).lean()
+    const jobsDoneData = await jobs.find(query).populate({path:"jobId", select: "nameofcustomer"}).limit(perPage).skip(pageNo).sort({createdAt:-1}).lean()
     const count = await jobs.find(query).countDocuments()
     if(jobsDoneData && jobsDoneData.length>0){
       return res.send({

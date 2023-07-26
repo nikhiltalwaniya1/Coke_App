@@ -194,7 +194,7 @@ exports.importfile = async (req, res) => {
 
 exports.downloadFile = async (req, res) => {
   try {
-    const jobsData = await jobs.find({}).lean()
+    const jobsData = await jobs.find({}).populate('jobId').lean()
     if(jobsData && jobsData.length>0){
       const reponse = await downloadXlsxFile(jobsData)
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

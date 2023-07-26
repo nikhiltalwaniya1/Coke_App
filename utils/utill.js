@@ -115,29 +115,32 @@ module.exports.downloadXlsxFile = async (data) => {
     const sheet = workbook.sheet("Sheet1");
     // Set cell values
     sheet.cell('A1').value('customerId');
-    sheet.cell('B1').value('manufectureSrNo');
+    sheet.cell('B1').value('nameofcustomer');
     sheet.cell('C1').value('equipmentSrNo');
-    sheet.cell('D1').value('state');
+    sheet.cell('D1').value('manufectureSrNo');
     sheet.cell('E1').value('city');
     sheet.cell('F1').value('area');
     sheet.cell('G1').value('address');
-    sheet.cell('H1').value('remark');
+    sheet.cell('H1').value('state');
     sheet.cell('I1').value('outLetStatus');
     sheet.cell('J1').value('coolerStatus');
+    sheet.cell('K1').value('remark');
 
     if (data && data.length > 0) {
       data.forEach((val, i) => {
         const row = i + 2;
         sheet.cell(`A${row}`).value(val.customerId);
-        sheet.cell(`B${row}`).value(val.manufecture);
+        sheet.cell(`B${row}`).value(val.jobId.nameofcustomer);
         sheet.cell(`C${row}`).value(val.equipmentSrNo);
-        sheet.cell(`D${row}`).value(val.state);
+        sheet.cell(`D${row}`).value(val.manufectureSrNo);
         sheet.cell(`E${row}`).value(val.city);
         sheet.cell(`F${row}`).value(val.area);
         sheet.cell(`G${row}`).value(val.address);
-        sheet.cell(`H${row}`).value(val.remark);
+        sheet.cell(`H${row}`).value(val.state);
         sheet.cell(`I${row}`).value(val.outLetStatus);
         sheet.cell(`J${row}`).value(val.coolerStatus);
+        sheet.cell(`K${row}`).value(val.remark);
+
       });
     }
     const fileData = await workbook.outputAsync();
